@@ -1,0 +1,56 @@
+.header {
+  position: relative;
+  // background-image: url("https://www.pistachiohotel.com/images/banner.jpg");
+  background-color: #333;
+  // background-position: center center;
+  // background-repeat: no-repeat;
+  // background-size: cover;
+  // -webkit-background-size: cover;
+  // -moz-background-size: cover;
+  // -o-background-size: cover;
+  // padding-top: 40%;
+  // background-attachment: scroll;
+
+  .ant-carousel {
+    .ant-image {
+      width: 100%;
+      img {
+        height: 600px;
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .nav-list {
+    position: fixed;
+    top: 0;
+
+    &.scrolled {
+      background-color: #032435;
+      z-index: 1000;
+      box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-item {
+      display: inline-block;
+      color: #fff;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-size: inherit;
+      letter-spacing: 0.115em;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px;
+      transition: all 0.1s ease-out;
+
+      &.active {
+        border-bottom: 1px solid #fff;
+      }
+
+      &:hover {
+        color: #fcb134 !important;
+      }
+    }
+  }
+}

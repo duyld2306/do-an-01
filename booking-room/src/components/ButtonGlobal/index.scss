@@ -1,0 +1,8 @@
+.button-global {
+  transition: all 0.3s;
+
+  &:hover {
+    color: #fff !important;
+    background-color: #bb834b;
+  }
+}

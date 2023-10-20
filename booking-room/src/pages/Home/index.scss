@@ -1,0 +1,21 @@
+.home-page {
+  .carousel {
+    display: flex;
+    justify-content: center;
+
+    .ant-carousel {
+      max-width: 1000px;
+    }
+
+    h2,
+    p {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+    }
+  }
+
+  @media (max-width: 1175px) {
+    .carousel {
+      display: block;
+    }
+  }
+}
