@@ -1,8 +1,10 @@
 .button-global {
-  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  transition: all 0.3s ease-out;
 
   &:hover {
-    color: #fff !important;
-    background-color: #bb834b;
+    opacity: 0.8;
   }
 }

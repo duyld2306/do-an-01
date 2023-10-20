@@ -1,3 +1,4 @@
+import "./index.scss";
 import React from "react";
 
 interface IContentProps {
@@ -5,5 +6,5 @@ interface IContentProps {
 }
 
 export default function Content({ children }: IContentProps) {
-  return <div>{children}</div>;
+  return <div className="content">{children}</div>;
 }

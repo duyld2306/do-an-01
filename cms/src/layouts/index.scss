@@ -1,4 +1,9 @@
 .wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  background-color: #f0f2f5;
+
   a {
     &:hover {
       color: unset;

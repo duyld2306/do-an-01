@@ -8,16 +8,8 @@ interface IFetcherOptions {
   isFormData?: boolean;
 }
 
-export interface IResponseDTO<T> {
-  data: {
-    metadata: {
-      pageNumber: number;
-      pageSize: number;
-      totalPages: number;
-      totalItems: number;
-    };
-    results: T;
-  };
+export interface IResponseDTOWithMetaData<T> {
+  data: T;
   errorCode: string;
   message: string;
   success: boolean;
@@ -38,8 +30,7 @@ function handleError(dataError: IDataError) {
   }
 }
 
-export default function fetcher<T>(
-  baseURL: string,
+export function fetcher<T>(
   config: AxiosRequestConfig,
   options?: IFetcherOptions
 ) {
@@ -51,7 +42,7 @@ export default function fetcher<T>(
   };
 
   const apiClient = axios.create({
-    baseURL,
+    baseURL: "http://localhost:8080/api/v1",
     timeout: 30000,
     headers: {
       "Content-Type": defaultOptions.isFormData
@@ -68,10 +59,10 @@ export default function fetcher<T>(
 
   return new Promise<T>((resolve, reject) => {
     apiClient
-      .request<T, AxiosResponse<IResponseDTO<T>>>(config)
+      .request<T, AxiosResponse<IResponseDTOWithMetaData<T>>>(config)
       .then(async (response) => {
         if (response.data.success) {
-          if (response.data.data.results === undefined) {
+          if (response.data.data === undefined) {
             const dataEmpty: IDataError = {
               errorCode: "ERROR???",
               errorMessage: "Data is empty",
@@ -82,7 +73,82 @@ export default function fetcher<T>(
             reject(dataEmpty);
             return;
           }
-          resolve(response.data.data.results);
+          resolve(response.data.data);
+          return;
+        }
+        const dataError: IDataError = {
+          errorCode: response.data.errorCode,
+          errorMessage: response.data.errorCode,
+        };
+
+        if (defaultOptions.displayError) {
+          handleError(dataError);
+        }
+        reject(dataError);
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          const somethingsWrong: IDataError = {
+            errorCode: "ERROR???",
+            errorMessage: "Somethings Wrong",
+          };
+          const dataError: IDataError =
+            (error?.response?.data as IDataError) ?? somethingsWrong;
+
+          if (defaultOptions.displayError) {
+            handleError(dataError);
+          }
+        }
+        reject(error);
+      });
+  });
+}
+
+export function fetcherWithMetaData<T>(
+  config: AxiosRequestConfig,
+  options?: IFetcherOptions
+) {
+  const defaultOptions: IFetcherOptions = {
+    displayError: true,
+    isFormData: false,
+    withToken: false,
+    ...options,
+  };
+
+  const apiClient = axios.create({
+    baseURL: "http://localhost:8080/api/v1",
+    timeout: 30000,
+    headers: {
+      "Content-Type": defaultOptions.isFormData
+        ? "multipart/form-data"
+        : "application/json",
+    },
+  });
+
+  if (defaultOptions.token) {
+    apiClient.defaults.headers.common.Authorization = `Bearer ${defaultOptions.token}`;
+  } else if (defaultOptions.withToken) {
+    //
+  }
+
+  return new Promise<T>((resolve, reject) => {
+    apiClient
+      .request<T, AxiosResponse<IResponseDTOWithMetaData<T>>>(config)
+      .then(async (response) => {
+        if (response.data.success) {
+          if (response.data.data === undefined) {
+            const dataEmpty: IDataError = {
+              errorCode: "ERROR???",
+              errorMessage: "Data is empty",
+            };
+            if (defaultOptions.displayError) {
+              handleError(dataEmpty);
+            }
+            reject(dataEmpty);
+            return;
+          }
+          resolve(response.data.data);
+          return;
         }
         const dataError: IDataError = {
           errorCode: response.data.errorCode,

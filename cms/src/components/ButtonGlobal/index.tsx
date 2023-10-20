@@ -1,42 +1,36 @@
 import "./index.scss";
-import React from "react";
-import { LoadingOutlined } from "@ant-design/icons";
+import { ReactNode } from "react";
+import { Button } from "antd";
 
-interface IButtonGlobal {
-  className?: string;
+interface IButtonGlobalProps {
+  title: ReactNode;
+  preIcon?: ReactNode;
   color?: string;
-  isLoading?: boolean;
-  preIcon?: React.ReactNode;
-  sufIcon?: React.ReactNode;
   onClick?: () => void;
-  children: React.ReactNode;
+  className?: string;
+  isLoading?: boolean;
+  disabled?: boolean;
 }
 
 export default function ButtonGlobal({
-  className,
-  color = "#bb834b",
-  isLoading,
-  preIcon,
-  sufIcon,
-  children,
+  title,
+  color = "#1890ff",
   onClick,
-}: IButtonGlobal) {
+  className,
+  isLoading,
+  disabled,
+}: IButtonGlobalProps) {
   return (
-    <button
+    <Button
       className={`button-global ${className}`}
-      style={{
-        border: `1px solid ${color}`,
-        color: color,
-        padding: "6px 15px",
-        fontSize: 12,
-      }}
+      style={{ background: color }}
+      type="primary"
       onClick={onClick}
-      disabled={isLoading}
+      loading={isLoading}
+      disabled={disabled}
+      color={color}
     >
-      {preIcon}
-      {children}
-      {sufIcon}
-      {isLoading ? <LoadingOutlined className="ml-2 text-sm" spin /> : null}
-    </button>
+      {title}
+    </Button>
   );
 }

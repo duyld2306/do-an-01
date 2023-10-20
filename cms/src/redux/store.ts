@@ -1,5 +1,5 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-
+import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
 import {
   persistStore,
   persistReducer,
@@ -9,31 +9,68 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-  Persistor,
 } from "redux-persist";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 
-import storage from "redux-persist/lib/storage";
+import MenuReducer from "./slices/MenuSlice";
+import ModalReducer from "./slices/ModalSlice";
+import UserReducer from "./slices/UserSlice";
 
-const persistConfig = {
-  key: "root",
-  version: 1,
-  storage,
-  whitelist: ["auth"],
+const createNoopStorage = (): {
+  getItem: (_key: string) => Promise<null>;
+  setItem: (_key: string, value: unknown) => Promise<unknown>;
+  removeItem: (_key: string) => Promise<void>;
+} => {
+  return {
+    getItem(): Promise<null> {
+      return Promise.resolve(null);
+    },
+    setItem(_key, value): Promise<unknown> {
+      return Promise.resolve(value);
+    },
+    removeItem(): Promise<void> {
+      return Promise.resolve();
+    },
+  };
 };
-const rootReducer = combineReducers({});
-const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = configureStore({
+const storage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createNoopStorage();
+
+const rootReducers = combineReducers({
+  menu: MenuReducer,
+  user: UserReducer,
+  modal: ModalReducer,
+});
+
+const persistedReducer = persistReducer(
+  {
+    key: "store",
+    version: 1,
+    storage: storage,
+    blacklist: ["modal"],
+  },
+  rootReducers
+);
+
+const store = configureStore({
   reducer: persistedReducer,
+  devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredPaths: [],
       },
     }),
-  devTools: process.env.NODE_ENV !== "production",
 });
 
-export type RootState = ReturnType<(typeof store)["getState"]>;
-export type AppDispatch = (typeof store)["dispatch"];
-export const persistor: Persistor = persistStore(store);
+export const persistor = persistStore(store);
+
+export default store;
+
+export type IRootState = ReturnType<typeof store.getState>;
+
+export type IAppDispatch = typeof store.dispatch;
