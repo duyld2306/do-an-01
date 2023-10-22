@@ -1,57 +1,127 @@
-import { FormProps } from "antd";
+import "./index.scss";
 import {
+  Checkbox,
+  CheckboxGroupProps,
   DatePicker,
   DatePickerProps,
-  Form,
-  FormItemProps,
   Input,
+  InputNumber,
+  InputNumberProps,
   InputProps,
+  PasswordProps,
   Radio,
   RadioGroupProps,
   Select,
   SelectProps,
+  FormItemProps,
+  Form,
 } from "formik-antd";
+import { Property } from "csstype";
+import { FormikFieldProps } from "formik-antd/lib/FieldProps";
+import { TextAreaProps } from "antd/lib/input";
+import { TextAreaRef } from "antd/lib/input/TextArea";
+import { FormProps } from "antd";
 
-function InputGlobal(props: InputProps): JSX.Element {
-  const { readOnly } = props;
+function InputFormikGlobal(props: InputProps) {
   return (
-    <div>
-      <Input
-        {...props}
-        className={readOnly ? "input-global-read-only" : "input-global"}
-      />
-    </div>
+    <Input {...props} className={`input-formik-global ${props.className}`} />
   );
 }
 
-function SelectGlobal(props: SelectProps): JSX.Element {
+function InputPasswordFormikGlobal(props: FormikFieldProps & PasswordProps) {
+  return <Input.Password {...props} className="input-formik-global" />;
+}
+
+function InputNumberGlobal(props: InputNumberProps) {
+  const parseInteger = (value?: string): number => {
+    if (!value && value !== "0") {
+      return 0;
+    }
+    const newValue = value.replace(/,/g, "");
+    return parseInt(newValue, 10);
+  };
+
+  return (
+    <InputNumber
+      className={`input-number-formik-global ${props.className}`}
+      formatter={(value): string =>
+        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      }
+      parser={parseInteger}
+      {...props}
+    />
+  );
+}
+
+function SelectFormikGlobal(props: SelectProps) {
   return (
     <Select
-      showSearch
+      dropdownStyle={{
+        borderRadius: "5px",
+      }}
       allowClear
-      showArrow
+      showSearch
       filterOption={(inputValue, option): boolean =>
         String(option?.label)
           ?.toLowerCase()
           ?.includes(inputValue.toLowerCase())
       }
       {...props}
+      className={`select-formik-global ${props.className}`}
     />
   );
 }
 
-function RadioGlobal(props: RadioGroupProps): JSX.Element {
-  return <Radio.Group {...props} />;
+interface InputTextAreaProps {
+  height?: number;
+  resize?: Property.Resize | undefined;
 }
 
-function DatePickerGlobal(props: DatePickerProps): JSX.Element {
+function TextAreaFormikGlobal(
+  props: FormikFieldProps &
+    TextAreaProps &
+    InputTextAreaProps &
+    React.RefAttributes<TextAreaRef>,
+) {
+  const { readOnly, height, resize = "none" } = props;
+  return (
+    <Input.TextArea
+      {...props}
+      className={`${
+        readOnly ? "input-formik-global-read-only" : "input-formik-global"
+      } ${props.className}`}
+      style={{
+        height: height,
+        width: "100%",
+        resize: resize,
+      }}
+    />
+  );
+}
+
+function DatePickerFormikGlobal(props: DatePickerProps) {
   return (
     <DatePicker
-      style={{ width: "100%", borderRadius: 5 }}
-      allowClear={false}
-      format="DD-MM-YYYY"
-      placeholder="dd-mm-yyyy"
       {...props}
+      className={`date-picker-formik-global ${props.className}`}
+    />
+  );
+}
+
+function CheckboxGroupFormikGlobal(props: CheckboxGroupProps) {
+  return (
+    <Checkbox.Group
+      {...props}
+      className={`check-box-group-formik-global ${props.className}`}
+    />
+  );
+}
+
+function RadioGroupFormikGlobal(props: RadioGroupProps) {
+  return (
+    <Radio.Group
+      {...props}
+      className={`radio-group-formik-global ${props.className}`}
     />
   );
 }
@@ -69,9 +139,13 @@ export default function FormGlobal(props: FormProps): JSX.Element {
 }
 
 export {
+  InputFormikGlobal,
+  InputPasswordFormikGlobal,
+  InputNumberGlobal,
+  SelectFormikGlobal,
+  TextAreaFormikGlobal,
+  DatePickerFormikGlobal,
+  CheckboxGroupFormikGlobal,
+  RadioGroupFormikGlobal,
   FormItemGlobal,
-  InputGlobal,
-  SelectGlobal,
-  RadioGlobal,
-  DatePickerGlobal,
 };

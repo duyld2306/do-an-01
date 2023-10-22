@@ -5,7 +5,7 @@ import { notification } from "antd";
 const notificationSuccess = (
   message: React.ReactNode,
   description?: React.ReactNode,
-  duration?: number
+  duration?: number,
 ) =>
   notification.success({
     message,
@@ -16,7 +16,7 @@ const notificationSuccess = (
 const notificationError = (
   message: React.ReactNode,
   description?: React.ReactNode,
-  duration?: number
+  duration?: number,
 ) =>
   notification.error({
     message,

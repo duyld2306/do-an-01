@@ -1,10 +1,9 @@
 import { BrowserRouter } from "react-router-dom";
-import CustomProvider from "./redux/provider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ErrorBoundary from "./ErrorBoundary";
 import "antd/dist/antd.css";
-import "./index.css";
+import "./index.scss";
 import LayoutWrapper from "./layouts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -22,13 +21,11 @@ function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <CustomProvider>
-          <QueryClientProvider client={queryClient}>
-            <LayoutWrapper />
-            <ToastContainer />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
-        </CustomProvider>
+        <QueryClientProvider client={queryClient}>
+          <LayoutWrapper />
+          <ToastContainer />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </BrowserRouter>
     </ErrorBoundary>
   );

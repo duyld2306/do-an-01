@@ -2,38 +2,54 @@ import { useRef } from "react";
 import { Formik, FormikProps } from "formik";
 import { Col, Divider, Image, Row, Tabs, TabsProps } from "antd";
 import FormGlobal, {
-  DatePickerGlobal,
+  DatePickerFormikGlobal,
   FormItemGlobal,
-  InputGlobal,
-  RadioGlobal,
-  SelectGlobal,
+  InputFormikGlobal,
+  RadioGroupFormikGlobal,
+  SelectFormikGlobal,
 } from "../FormGlobal";
 import ModalGlobal from "../ModalGlobal";
-import { PayPalButtons } from "@paypal/react-paypal-js";
 import moment, { Moment } from "moment";
+import { IRoomRes } from "@/api/ApiRoom";
 
 interface IRoomValue {
-  checkIn: Moment;
-  checkOut: Moment;
+  firstName: string;
+  lastName: string;
+  sex: string;
+  email: string;
+  tel: string;
+  checkin: Moment;
+  checkout: Moment;
+  idRoom: string;
+  paymentType: string;
 }
 
 interface IModalOrderRoomProps {
   isOpenModal: boolean;
-  onclose: () => void;
+  handleCloseModal: () => void;
+  roomSelected: IRoomRes;
 }
 export default function ModalOrderRoom({
   isOpenModal,
-  onclose,
+  handleCloseModal,
+  roomSelected,
 }: IModalOrderRoomProps) {
   const innerRef = useRef<FormikProps<IRoomValue>>(null);
 
-  const initialValues = {
-    checkIn: moment().startOf("day"),
-    checkOut: moment().startOf("day").add(1, "day"),
+  const initialValues: IRoomValue = {
+    firstName: "",
+    lastName: "",
+    sex: "male",
+    email: "",
+    tel: "",
+    checkin: moment().startOf("day"),
+    checkout: moment().startOf("day").add(1, "day"),
+    idRoom: roomSelected.id,
+    paymentType: "Momo",
   };
 
   const handleCancel = () => {
-    onclose();
+    handleCloseModal();
   };
 
   const calculateNight = (sd: Moment, ed: Moment) => {
@@ -123,7 +139,7 @@ export default function ModalOrderRoom({
   ];
 
   return (
-    <Formik<IRoomValue>
+    <Formik
       innerRef={innerRef}
       initialValues={initialValues}
       enableReinitialize
@@ -136,7 +152,6 @@ export default function ModalOrderRoom({
             title="Đặt phòng"
             onOk={formikProps.handleSubmit}
             onCancel={handleCancel}
-            footer={null}
           >
             <FormGlobal>
               <Row gutter={[16, 0]}>
@@ -156,37 +171,36 @@ export default function ModalOrderRoom({
                 <Col span={12}>
                   <Row gutter={[8, 0]}>
                     <Col span={12}>
-                      <FormItemGlobal name="name" label="Họ" required>
-                        <InputGlobal name="name" placeholder="Họ" />
+                      <FormItemGlobal name="lastName" label="Họ" required>
+                        <InputFormikGlobal name="lastName" placeholder="Họ" />
                       </FormItemGlobal>
-                      <FormItemGlobal name="name" label="Email" required>
-                        <InputGlobal name="name" placeholder="Email" />
+                      <FormItemGlobal name="email" label="Email" required>
+                        <InputFormikGlobal name="email" placeholder="Email" />
                       </FormItemGlobal>
-                      <FormItemGlobal name="name" label="Giới tính" required>
-                        <SelectGlobal
-                          name="name"
+                      <FormItemGlobal name="sex" label="Giới tính" required>
+                        <SelectFormikGlobal
+                          name="sex"
                           placeholder="Giới tính"
                           options={[
-                            { label: "Nam", value: 0 },
-                            { label: "Nữ", value: 1 },
+                            { label: "Nam", value: "male" },
+                            { label: "Nữ", value: "female" },
                           ]}
                         />
                       </FormItemGlobal>
                     </Col>
                     <Col span={12}>
-                      <FormItemGlobal name="name" label="Tên" required>
-                        <InputGlobal name="name" placeholder="Tên" />
+                      <FormItemGlobal name="firstName" label="Tên" required>
+                        <InputFormikGlobal name="firstName" placeholder="Tên" />
                       </FormItemGlobal>
-                      <FormItemGlobal
-                        name="name"
-                        label="Số điện thoại"
-                        required
-                      >
-                        <InputGlobal name="name" placeholder="Số điện thoại" />
+                      <FormItemGlobal name="tel" label="Số điện thoại" required>
+                        <InputFormikGlobal
+                          name="tel"
+                          placeholder="Số điện thoại"
+                        />
                       </FormItemGlobal>
-                      <FormItemGlobal name="name" label="Thời gian đến">
-                        <SelectGlobal
-                          name="name"
+                      <FormItemGlobal name="arrivedDate" label="Thời gian đến">
+                        <SelectFormikGlobal
+                          name="arrivedDate"
                           placeholder="Thời gian đến"
                           options={[
                             { label: "01:00 AM", value: 1 },
@@ -220,13 +234,13 @@ export default function ModalOrderRoom({
                   </Row>
                   <Row gutter={[8, 0]}>
                     <Col span={12}>
-                      <FormItemGlobal name="checkIn" label="Check-in" required>
-                        <DatePickerGlobal
-                          name="checkIn"
+                      <FormItemGlobal name="checkin" label="Check-in" required>
+                        <DatePickerFormikGlobal
+                          name="checkin"
                           allowClear={false}
                           disabledDate={(d) =>
                             d <= moment().subtract(1, "days") ||
-                            d >= formikProps.values.checkOut
+                            d >= formikProps.values.checkout
                           }
                           onChange={(date) => {
                             formikProps.setFieldValue(
@@ -239,14 +253,14 @@ export default function ModalOrderRoom({
                     </Col>
                     <Col span={12}>
                       <FormItemGlobal
-                        name="checkOut"
+                        name="checkout"
                         label="Check-out"
                         required
                       >
-                        <DatePickerGlobal
-                          name="checkOut"
+                        <DatePickerFormikGlobal
+                          name="checkout"
                           allowClear={false}
-                          disabledDate={(d) => d <= formikProps.values.checkIn}
+                          disabledDate={(d) => d <= formikProps.values.checkin}
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkOut",
@@ -260,50 +274,25 @@ export default function ModalOrderRoom({
                   <span className="font-bold">
                     Số tiền thanh toán:{" "}
                     {calculateNight(
-                      formikProps.values.checkIn,
-                      formikProps.values.checkOut,
+                      formikProps.values.checkin,
+                      formikProps.values.checkout,
                     )}{" "}
                     VNĐ
                   </span>
                   <Divider />
                   <div className="mt-5">
                     <span className="font-bold">Phương thức thanh toán</span>
-                    <FormItemGlobal name="name" required>
-                      <RadioGlobal
-                        name="name"
-                        options={[{ label: "Credit Card", value: 0 }]}
+                    <FormItemGlobal name="paymentType" required>
+                      <RadioGroupFormikGlobal
+                        name="paymentType"
+                        options={[
+                          { label: "Momo", value: "Momo" },
+                          { label: "Vnpay", value: "Vnpay" },
+                          { label: "Zalopay", value: "Zalopay" },
+                        ]}
                       />
                     </FormItemGlobal>
-                    <Row gutter={[8, 0]}>
-                      <Col span={8}>
-                        <FormItemGlobal name="name" label="Số thẻ" required>
-                          <InputGlobal name="name" placeholder="Số thẻ" />
-                        </FormItemGlobal>
-                      </Col>
-                      <Col span={8}>
-                        <FormItemGlobal name="name" label="MY/YY" required>
-                          <InputGlobal name="name" placeholder="MY/YY" />
-                        </FormItemGlobal>
-                      </Col>
-                      <Col span={8}>
-                        <FormItemGlobal name="name" label="CVV" required>
-                          <InputGlobal name="name" placeholder="CVV" />
-                        </FormItemGlobal>
-                      </Col>
-                    </Row>
-                    <Row gutter={[8, 0]}>
-                      <Col span={12}>
-                        <FormItemGlobal
-                          name="name"
-                          label="Tên chủ thẻ"
-                          required
-                        >
-                          <InputGlobal name="name" placeholder="Tên chủ thẻ" />
-                        </FormItemGlobal>
-                      </Col>
-                    </Row>
                   </div>
-                  <PayPalButtons />
                 </Col>
               </Row>
             </FormGlobal>

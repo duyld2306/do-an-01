@@ -1,10 +1,21 @@
+import ApiRoom from "@/api/ApiRoom";
 import "./index.scss";
 import ButtonGlobal from "@/components/ButtonGlobal";
+import { useQuery } from "@tanstack/react-query";
 import { Carousel, Col, Image, Popover, Row } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function DetailRoom() {
   const navigate = useNavigate();
+  const { id: slug = "" } = useParams();
+
+  const { data: room } = useQuery(
+    ["get_room", slug],
+    () => ApiRoom.getRoom(slug),
+    { enabled: !!slug },
+  );
+
+  console.log(room);
 
   const openDetail = () => {
     navigate("/room/1");
@@ -37,8 +48,8 @@ export default function DetailRoom() {
             </div>
           }
         >
-          <h1 className="text-center mb-3 text-[#333] text-[1.8em] font-normal">
-            PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
+          <h1 className="text-center mb-3 text-[#333] text-[1.8em] font-normal uppercase">
+            {room?.name || "Tên phòng chờ cập nhật"}
           </h1>
         </Popover>
         <div className="carousel mb-5">
@@ -46,46 +57,23 @@ export default function DetailRoom() {
             className="max-w-[1000px] h-[500px] bg-[#333]"
             effect="fade"
           >
-            <div>
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
-                preview={false}
-              />
-            </div>
-            <div>
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home4.jpg"
-                preview={false}
-              />
-            </div>
-            <div>
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                preview={false}
-              />
-            </div>
-            <Image
-              className="w-[1000px] h-[500px] object-cover"
-              src="https://www.pistachiohotel.com/UploadFile/Banner/home6.jpg"
-              preview={false}
-            />
+            {(room?.images?.length ?? 0) > 0 &&
+              room?.images?.map((item, i) => (
+                <div key={i}>
+                  <Image
+                    className="w-[1000px] h-[500px] object-cover"
+                    src={
+                      item ??
+                      "https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
+                    }
+                    preview={false}
+                  />
+                </div>
+              ))}
           </Carousel>
         </div>
         <div className="mx-auto text-center max-w-[1000px] mb-5">
-          <p className="inline-block mb-3">
-            Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng nhưng
-            không kém phần trang nhã với 1 giường lớn, ghế sofa phòng khách,
-            tivi, bàn làm việc kết hợp trang điểm, tủ quần áo, phòng tắm hiện
-            đại,…
-          </p>
-          <p>
-            Phòng có cửa sổ lớn thoáng đãng đón ánh nắng và làn sương lạnh vào
-            mỗi sáng sớm. Đây là sự lựa chọn tuyệt vời cho các du khách cá nhân
-            hay các cặp đôi.
-          </p>
+          {room?.description || "Mô tả phòng chờ cập nhật"}
         </div>
         <div className="flex justify-center">
           <ButtonGlobal>Đặt phòng</ButtonGlobal>

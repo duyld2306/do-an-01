@@ -67,9 +67,11 @@ export default function RoomManagement() {
     {
       title: "Tính năng",
       align: "center",
-      render: (_, record) => (
-        <div>{record.featureRooms?.map((item) => <span>{item}</span>)}</div>
-      ),
+      // render: (_, record) => (
+      //   <div>
+      //     {record.featureRooms?.map((item, i) => <span key={i}>{item}</span>)}
+      //   </div>
+      // ),
     },
     {
       title: "Hành động",

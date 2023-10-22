@@ -1,5 +1,6 @@
 .modal-global {
   border-radius: 5px;
+
   .ant-modal-content {
     border-radius: 5px;
   }
@@ -39,5 +40,26 @@
     .modal-global_content {
       max-height: 600px;
     }
+  }
+
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
   }
 }
