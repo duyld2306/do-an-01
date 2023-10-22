@@ -3,7 +3,7 @@ import React from "react";
 const PageNotFound = React.lazy(() => import("@/pages/404"));
 const RoomManagement = React.lazy(() => import("@/pages/room-management"));
 const CustomerManagement = React.lazy(
-  () => import("@/pages/customer-management")
+  () => import("@/pages/customer-management"),
 );
 
 export interface IRoute {

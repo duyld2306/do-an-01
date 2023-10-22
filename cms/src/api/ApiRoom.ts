@@ -8,8 +8,13 @@ export interface IGetIRoomsParams {
 }
 
 export interface IRoomRes {
-  a: number;
-  b: number;
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  slug: string;
+  images?: string[];
+  featureRooms?: number[];
 }
 
 export interface IGetRoomsRes {
@@ -29,11 +34,19 @@ const getRooms = (params?: IGetIRoomsParams): Promise<IGetRoomsRes> => {
 const createRoom = (data: FormData): Promise<IGetRoomsRes> => {
   return fetcherWithMetaData(
     { method: "post", url: "/room/save", data },
-    { isFormData: true }
+    { isFormData: true },
+  );
+};
+
+const updateRoom = (data: FormData): Promise<IGetRoomsRes> => {
+  return fetcherWithMetaData(
+    { method: "post", url: "/room/update", data },
+    { isFormData: true },
   );
 };
 
 export default {
-  createRoom,
   getRooms,
+  createRoom,
+  updateRoom,
 };

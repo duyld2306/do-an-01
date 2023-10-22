@@ -32,7 +32,7 @@ function handleError(dataError: IDataError) {
 
 export function fetcher<T>(
   config: AxiosRequestConfig,
-  options?: IFetcherOptions
+  options?: IFetcherOptions,
 ) {
   const defaultOptions: IFetcherOptions = {
     displayError: true,
@@ -106,7 +106,7 @@ export function fetcher<T>(
 
 export function fetcherWithMetaData<T>(
   config: AxiosRequestConfig,
-  options?: IFetcherOptions
+  options?: IFetcherOptions,
 ) {
   const defaultOptions: IFetcherOptions = {
     displayError: true,

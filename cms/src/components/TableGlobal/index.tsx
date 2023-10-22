@@ -1,3 +1,4 @@
+import "./index.scss";
 import React from "react";
 import { Table, TableProps } from "antd";
 import { ColumnsType } from "antd/lib/table";
@@ -28,9 +29,9 @@ interface ITableGlobalProps extends TableProps<DefaultRecordType> {
 }
 
 export const TABLE_DEFAULT_VALUE = {
-  defaultPageSize: 20,
+  defaultPageSize: 10,
   showSizeChanger: true,
-  pageSizeOptions: ["10", "20", "50", "100"],
+  pageSizeOptions: ["5", "10", "15", "20"],
   showQuickJumper: true,
 };
 

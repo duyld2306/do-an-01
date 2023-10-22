@@ -52,7 +52,7 @@ const persistedReducer = persistReducer(
     storage: storage,
     blacklist: ["modal"],
   },
-  rootReducers
+  rootReducers,
 );
 
 const store = configureStore({
