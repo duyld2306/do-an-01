@@ -10,7 +10,10 @@ import FormGlobal, {
 } from "../FormGlobal";
 import ModalGlobal from "../ModalGlobal";
 import moment, { Moment } from "moment";
-import { IRoomRes } from "@/api/ApiRoom";
+import ApiRoom, { IBookRoomBody, IRoomRes } from "@/api/ApiRoom";
+import { useMutation } from "@tanstack/react-query";
+import Notification from "../Notification";
+import { BookingRoomValidation } from "@/utils/validation/booking-room";
 
 interface IRoomValue {
   firstName: string;
@@ -48,7 +51,8 @@ export default function ModalOrderRoom({
     paymentType: "Momo",
   };
 
-  const handleCancel = () => {
+  const onCancel = () => {
+    innerRef.current?.resetForm();
     handleCloseModal();
   };
 
@@ -56,8 +60,20 @@ export default function ModalOrderRoom({
     return ed.diff(sd, "days") * 7500000;
   };
 
-  const handleSubmit = (data: IRoomValue) => {
-    console.log(data);
+  const bookRoomMutation = useMutation(ApiRoom.bookRoom);
+  const handleSubmit = (values: IRoomValue) => {
+    const newValues: IBookRoomBody = {
+      ...values,
+      checkin: values.checkin.format("YYYY-MM-DD"),
+      checkout: values.checkout.format("YYYY-MM-DD"),
+    };
+    console.log(newValues);
+    bookRoomMutation.mutate(newValues, {
+      onSuccess: () => {
+        Notification.notificationSuccess("Vui lòng hoàn tất thủ tục đặt phòng");
+        onCancel();
+      },
+    });
   };
 
   const items: TabsProps["items"] = [
@@ -65,43 +81,16 @@ export default function ModalOrderRoom({
       key: "1",
       label: "Mô tả",
       children: (
-        <div>
-          <p className="inline-block mb-2">
-            Presidential SUITE Elegant and modern, spacious and intimate, the
-            Presidential SUITE Room at PISTACHIO HOTEL SAPA is only choose for
-            the comfortable at Sapa with the amazing view. The room has a total
-            floor size of 127sqm, including 1 separate bedrooms and kitchen with
-            magnificent views of Sapa mountain range.
-          </p>
-          <div className="flex flex-col">
-            <p className="font-bold">Chi tiết</p>
-            <span>Số lượng phòng: 01</span>
-            <span>Diện tích: 100m2</span>
-            <span>Số lượng giường: 2</span>
-            <span>Diện tích: 100m2</span>
-            <span>View: Thung lũng</span>
-          </div>
-        </div>
+        <p className="inline-block mb-2">
+          {roomSelected.description ?? "Mô tả đang chờ cập nhật"}
+        </p>
       ),
     },
     {
       key: "2",
       label: "Tiện nghi",
       children: (
-        <ul>
-          <li>Bathrobes</li>
-          <li>Sliliers</li>
-          <li>220-240 volt circuits</li>
-          <li>Cable television</li>
-          <li>LAN internet (wired)</li>
-          <li>Wireless internet (WiFi) - fee</li>
-          <li>Cribs ulion request</li>
-          <li>110-120 volt circuits</li>
-          <li>Cable television - fee</li>
-          <li>Hairdryer</li>
-          <li>LAN internet (wired) - fee</li>
-          <li>Wireless internet (WiFi)</li>
-        </ul>
+        <ul>{roomSelected.featureRooms?.map((item) => <li>{item}</li>)}</ul>
       ),
     },
     {
@@ -109,13 +98,8 @@ export default function ModalOrderRoom({
       label: "Hình ảnh",
       children: (
         <div className="flex flex-wrap gap-2">
-          {[1, 2, 3, 4, 5, 7, 8, 9, 0].map(() => (
-            <Image
-              width={100}
-              height={100}
-              src="https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
-              preview={false}
-            />
+          {roomSelected.images?.map((item) => (
+            <Image width={100} height={100} src={item} preview={false} />
           ))}
         </div>
       ),
@@ -144,6 +128,7 @@ export default function ModalOrderRoom({
       initialValues={initialValues}
       enableReinitialize
       onSubmit={handleSubmit}
+      validationSchema={BookingRoomValidation}
     >
       {(formikProps): JSX.Element => {
         return (
@@ -151,16 +136,18 @@ export default function ModalOrderRoom({
             open={isOpenModal}
             title="Đặt phòng"
             onOk={formikProps.handleSubmit}
-            onCancel={handleCancel}
+            onCancel={onCancel}
+            isLoadingOK={bookRoomMutation.isLoading}
           >
             <FormGlobal>
               <Row gutter={[16, 0]}>
                 <Col span={12}>
                   <div className="font-bold">
-                    Presidential Suite valley view
+                    {roomSelected.name ?? "Tên đang chờ cập nhật"}
                   </div>
                   <div>
-                    Giá: 75000000 <span>VNĐ - 1 đêm</span>
+                    Giá: {(roomSelected.price ?? 0).toLocaleString()}{" "}
+                    <span>vnđ - 1 đêm</span>
                   </div>
                   <Tabs
                     className="max-w-[1200px]"
@@ -244,7 +231,7 @@ export default function ModalOrderRoom({
                           }
                           onChange={(date) => {
                             formikProps.setFieldValue(
-                              "checkIn",
+                              "checkin",
                               date?.startOf("day"),
                             );
                           }}
@@ -263,7 +250,7 @@ export default function ModalOrderRoom({
                           disabledDate={(d) => d <= formikProps.values.checkin}
                           onChange={(date) => {
                             formikProps.setFieldValue(
-                              "checkOut",
+                              "checkout",
                               date?.startOf("day"),
                             );
                           }}

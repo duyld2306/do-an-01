@@ -7,10 +7,10 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Room() {
-  const navigate = useNavigate();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [roomSelected, setRoomSelected] = useState<IRoomRes>();
 
+  const navigate = useNavigate();
   const roomParams: IGetIRoomsParams = {
     page: 0,
     limit: 4,
@@ -46,18 +46,13 @@ export default function Room() {
     );
   }, [rooms?.pages]);
 
-  console.log("displayRooms:", displayRooms);
-
   const openDetail = (slug: string) => {
     navigate(`/room/${slug}`);
   };
 
-  // const openModalOrder = () => {
-  //   setIsOpenModal(true);
-  // };
-
   const handleCloseModal = () => {
     setIsOpenModal(false);
+    setRoomSelected(undefined);
   };
 
   return (

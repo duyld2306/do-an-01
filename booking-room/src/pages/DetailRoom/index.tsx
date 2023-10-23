@@ -1,11 +1,16 @@
-import ApiRoom from "@/api/ApiRoom";
+import ApiRoom, { IRoomRes } from "@/api/ApiRoom";
 import "./index.scss";
 import ButtonGlobal from "@/components/ButtonGlobal";
 import { useQuery } from "@tanstack/react-query";
 import { Carousel, Col, Image, Popover, Row } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import ModalOrderRoom from "@/components/ModalOrderRoom";
 
 export default function DetailRoom() {
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [roomSelected, setRoomSelected] = useState<IRoomRes>();
+
   const navigate = useNavigate();
   const { id: slug = "" } = useParams();
 
@@ -15,10 +20,19 @@ export default function DetailRoom() {
     { enabled: !!slug },
   );
 
-  console.log(room);
+  const { data: rooms } = useQuery(["get_rooms_1"], () => ApiRoom.getRooms());
 
-  const openDetail = () => {
-    navigate("/room/1");
+  const displayRooms = useMemo(() => {
+    return rooms?.results.filter((item) => item.slug !== slug);
+  }, [rooms, slug]);
+
+  const openDetail = (slug: string) => {
+    navigate(`/room/${slug}`);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+    setRoomSelected(undefined);
   };
 
   return (
@@ -76,7 +90,14 @@ export default function DetailRoom() {
           {room?.description || "Mô tả phòng chờ cập nhật"}
         </div>
         <div className="flex justify-center">
-          <ButtonGlobal>Đặt phòng</ButtonGlobal>
+          <ButtonGlobal
+            onClick={() => {
+              setRoomSelected(room);
+              setIsOpenModal(true);
+            }}
+          >
+            Đặt phòng
+          </ButtonGlobal>
         </div>
       </div>
 
@@ -86,45 +107,11 @@ export default function DetailRoom() {
         </h1>
         <div className="flex justify-center">
           <Row className="w-[1000px]">
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
-            <Col xs={24} sm={12} md={6} className="border-b">
-              <span>Điều hòa 2 chiều</span>
-            </Col>
+            {room?.featureRooms?.map((item) => (
+              <Col xs={24} sm={12} md={6} className="border-b">
+                <span>{item}</span>
+              </Col>
+            ))}
           </Row>
         </div>
       </div>
@@ -135,106 +122,53 @@ export default function DetailRoom() {
         </h1>
         <div className="flex justify-center">
           <Row gutter={[16, 24]} className="w-[1200px]">
-            <Col sm={24} md={12}>
-              <div className="text-center">
-                <div className="w-full h-[400px] overflow-hidden">
-                  <Image
-                    className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                    preview={false}
-                    onClick={openDetail}
-                  />
+            {displayRooms?.map((item) => (
+              <Col key={item.slug} sm={24} md={12}>
+                <div className="text-center">
+                  <div className="w-full h-[400px] overflow-hidden">
+                    <Image
+                      className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
+                      src={
+                        item.images?.length ?? 0 > 0
+                          ? item.images?.[1]
+                          : "https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                      }
+                      preview={false}
+                      onClick={() => openDetail(item.slug)}
+                    />
+                  </div>
+                  <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2 uppercase">
+                    {item.name || "Tên phòng chờ cập nhật"}
+                  </h2>
+                  <p className="my-3">
+                    {item.description || "Mô tả phòng chờ cập nhật"}
+                  </p>
+                  <div className="flex justify-center gap-3">
+                    <ButtonGlobal
+                      onClick={() => {
+                        setRoomSelected(item);
+                        setIsOpenModal(true);
+                      }}
+                    >
+                      Đặt phòng
+                    </ButtonGlobal>
+                    <ButtonGlobal onClick={() => openDetail(item.slug)}>
+                      Chi tiết
+                    </ButtonGlobal>
+                  </div>
                 </div>
-                <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2">
-                  PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
-                </h2>
-                <p className="my-3">
-                  Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng
-                  nhưng không kém phần trang nhã với 1 giường lớn, ghế sofa
-                  phòng khách, tivi, bàn làm việc kết hợp trang điểm, tủ quần
-                  áo, phòng tắm hiện...
-                </p>
-                <div className="flex justify-center gap-3">
-                  <ButtonGlobal>Đặt phòng</ButtonGlobal>
-                  <ButtonGlobal onClick={openDetail}>Chi tiết</ButtonGlobal>
-                </div>
-              </div>
-            </Col>
-            <Col sm={24} md={12}>
-              <div className="text-center">
-                <div className="w-full h-[400px] overflow-hidden">
-                  <Image
-                    className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                    preview={false}
-                  />
-                </div>
-                <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2">
-                  PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
-                </h2>
-                <p className="my-3">
-                  Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng
-                  nhưng không kém phần trang nhã với 1 giường lớn, ghế sofa
-                  phòng khách, tivi, bàn làm việc kết hợp trang điểm, tủ quần
-                  áo, phòng tắm hiện...
-                </p>
-                <div className="flex justify-center gap-3">
-                  <ButtonGlobal>Đặt phòng</ButtonGlobal>
-                  <ButtonGlobal>Chi tiết</ButtonGlobal>
-                </div>
-              </div>
-            </Col>
-            <Col sm={24} md={12}>
-              <div className="text-center">
-                <div className="w-full h-[400px] overflow-hidden">
-                  <Image
-                    className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                    preview={false}
-                  />
-                </div>
-                <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2">
-                  PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
-                </h2>
-                <p className="my-3">
-                  Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng
-                  nhưng không kém phần trang nhã với 1 giường lớn, ghế sofa
-                  phòng khách, tivi, bàn làm việc kết hợp trang điểm, tủ quần
-                  áo, phòng tắm hiện...
-                </p>
-                <div className="flex justify-center gap-3">
-                  <ButtonGlobal>Đặt phòng</ButtonGlobal>
-                  <ButtonGlobal>Chi tiết</ButtonGlobal>
-                </div>
-              </div>
-            </Col>
-            <Col sm={24} md={12}>
-              <div className="text-center">
-                <div className="w-full h-[400px] overflow-hidden">
-                  <Image
-                    className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                    preview={false}
-                  />
-                </div>
-                <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2">
-                  PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
-                </h2>
-                <p className="my-3">
-                  Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng
-                  nhưng không kém phần trang nhã với 1 giường lớn, ghế sofa
-                  phòng khách, tivi, bàn làm việc kết hợp trang điểm, tủ quần
-                  áo, phòng tắm hiện...
-                </p>
-                <div className="flex justify-center gap-3">
-                  <ButtonGlobal>Đặt phòng</ButtonGlobal>
-                  <ButtonGlobal>Chi tiết</ButtonGlobal>
-                </div>
-              </div>
-            </Col>
+              </Col>
+            ))}
           </Row>
         </div>
       </div>
+      {roomSelected && (
+        <ModalOrderRoom
+          isOpenModal={isOpenModal}
+          handleCloseModal={handleCloseModal}
+          roomSelected={roomSelected}
+        />
+      )}
     </div>
   );
 }
