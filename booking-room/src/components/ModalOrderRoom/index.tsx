@@ -57,7 +57,7 @@ export default function ModalOrderRoom({
   };
 
   const calculateNight = (sd: Moment, ed: Moment) => {
-    return ed.diff(sd, "days") * 7500000;
+    return ed.diff(sd, "days") * (roomSelected.price ?? 0);
   };
 
   const bookRoomMutation = useMutation(ApiRoom.bookRoom);
@@ -67,10 +67,10 @@ export default function ModalOrderRoom({
       checkin: values.checkin.format("YYYY-MM-DD"),
       checkout: values.checkout.format("YYYY-MM-DD"),
     };
-    console.log(newValues);
     bookRoomMutation.mutate(newValues, {
-      onSuccess: () => {
+      onSuccess: (response) => {
         Notification.notificationSuccess("Vui lòng hoàn tất thủ tục đặt phòng");
+        window.open(response, "_blank");
         onCancel();
       },
     });
@@ -90,7 +90,9 @@ export default function ModalOrderRoom({
       key: "2",
       label: "Tiện nghi",
       children: (
-        <ul>{roomSelected.featureRooms?.map((item) => <li>{item}</li>)}</ul>
+        <ul>
+          {roomSelected.featureRooms?.map((item) => <li>{item.name}</li>)}
+        </ul>
       ),
     },
     {

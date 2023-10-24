@@ -1,6 +1,6 @@
 import { fetcher } from "./Fetcher";
 
-export interface IGetIRoomsParams {
+export interface IGetRoomsParams {
   page?: number;
   limit?: number;
   sort?: string[];
@@ -14,7 +14,7 @@ export interface IRoomRes {
   description: string;
   slug: string;
   images?: string[];
-  featureRooms?: number[];
+  featureRooms?: { id: number; name: string }[];
 }
 
 export interface IGetRoomsRes {
@@ -39,7 +39,7 @@ export interface IBookRoomBody {
   paymentType: string;
 }
 
-const getRooms = (params?: IGetIRoomsParams): Promise<IGetRoomsRes> => {
+const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {
   return fetcher({ method: "get", url: "/room/list", params });
 };
 
@@ -47,7 +47,7 @@ const getRoom = (slug: string): Promise<IRoomRes> => {
   return fetcher({ method: "get", url: `/room/${slug}` });
 };
 
-const bookRoom = (data: IBookRoomBody): Promise<{ link: string }> => {
+const bookRoom = (data: IBookRoomBody): Promise<string> => {
   return fetcher({ method: "post", url: "booking/client-booking", data });
 };
 

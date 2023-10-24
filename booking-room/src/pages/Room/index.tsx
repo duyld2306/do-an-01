@@ -1,4 +1,4 @@
-import ApiRoom, { IGetIRoomsParams, IRoomRes } from "@/api/ApiRoom";
+import ApiRoom, { IGetRoomsParams, IRoomRes } from "@/api/ApiRoom";
 import ButtonGlobal from "@/components/ButtonGlobal";
 import ModalOrderRoom from "@/components/ModalOrderRoom";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ export default function Room() {
   const [roomSelected, setRoomSelected] = useState<IRoomRes>();
 
   const navigate = useNavigate();
-  const roomParams: IGetIRoomsParams = {
+  const roomParams: IGetRoomsParams = {
     page: 0,
     limit: 4,
   };

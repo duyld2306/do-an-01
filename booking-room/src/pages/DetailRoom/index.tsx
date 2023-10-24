@@ -17,7 +17,7 @@ export default function DetailRoom() {
   const { data: room } = useQuery(
     ["get_room", slug],
     () => ApiRoom.getRoom(slug),
-    { enabled: !!slug },
+    { enabled: !!slug }
   );
 
   const { data: rooms } = useQuery(["get_rooms_1"], () => ApiRoom.getRooms());
@@ -109,7 +109,7 @@ export default function DetailRoom() {
           <Row className="w-[1000px]">
             {room?.featureRooms?.map((item) => (
               <Col xs={24} sm={12} md={6} className="border-b">
-                <span>{item}</span>
+                <span>{item.name}</span>
               </Col>
             ))}
           </Row>
