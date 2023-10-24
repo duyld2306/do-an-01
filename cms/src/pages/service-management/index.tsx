@@ -1,7 +1,4 @@
-import ApiCustomer, {
-  ICustomerRes,
-  IGetCustomersParams,
-} from "@/api/ApiCustomer";
+import ApiService, { IGetServicesParams, IServiceRes } from "@/api/ApiService";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
 import TableGlobal, {
   IChangeTable,
@@ -14,53 +11,52 @@ import { useState } from "react";
 
 export default function RoomManagement() {
   const [searchValue, setSearchValue] = useState("");
-  const [customerParams, setCustomerParams] = useState<IGetCustomersParams>({
+  const [serviceParams, setServiceParams] = useState<IGetServicesParams>({
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
 
   const { data: customers } = useQuery(
-    ["get_customers", customerParams],
-    () => ApiCustomer.getCustomers(customerParams),
+    ["get_services", serviceParams],
+    () => ApiService.getServices(serviceParams),
     {
       keepPreviousData: true,
     },
   );
 
   const handleChangeTable = (value: IChangeTable) => {
-    setCustomerParams({
-      ...customerParams,
+    setServiceParams({
+      ...serviceParams,
       page: value.page - 1,
       limit: value.pageSize,
     });
   };
 
-  const columns: ColumnsType<ICustomerRes> = [
+  const columns: ColumnsType<IServiceRes> = [
     {
       title: "STT",
       align: "center",
       render: (_, __, i) => i + 1,
     },
     {
-      title: "Tên khách hàng",
+      title: "Tên dịch vụ",
       dataIndex: "name",
       align: "center",
     },
     {
-      title: "email",
-      dataIndex: "email",
+      title: "Đơn vị",
+      dataIndex: "unity",
       align: "center",
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "tel",
+      title: "Đơn giá",
+      dataIndex: "price",
       align: "center",
     },
     {
-      title: "Giới tính",
-      dataIndex: "sex",
+      title: "Mô tả",
+      dataIndex: "description",
       align: "center",
-      render: (value) => (value === "male" ? "Nam" : "Nữ"),
     },
   ];
 
@@ -71,7 +67,7 @@ export default function RoomManagement() {
           <InputSearchGlobal
             onChange={(e) => setSearchValue(e.target.value.trim())}
             onSearch={() =>
-              setCustomerParams({ ...customerParams, search: searchValue })
+              setServiceParams({ ...serviceParams, search: searchValue })
             }
           />
         </Space>

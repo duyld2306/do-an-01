@@ -1,7 +1,7 @@
-import ApiCustomer, {
-  ICustomerRes,
-  IGetCustomersParams,
-} from "@/api/ApiCustomer";
+import ApiBookRoom, {
+  IBookingRes,
+  IGetBookingsParams,
+} from "@/api/ApiBookRoom";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
 import TableGlobal, {
   IChangeTable,
@@ -10,32 +10,33 @@ import TableGlobal, {
 import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
 import { ColumnsType } from "antd/lib/table";
+import moment from "moment";
 import { useState } from "react";
 
 export default function RoomManagement() {
   const [searchValue, setSearchValue] = useState("");
-  const [customerParams, setCustomerParams] = useState<IGetCustomersParams>({
+  const [bookingParams, setBookingParams] = useState<IGetBookingsParams>({
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
 
   const { data: customers } = useQuery(
-    ["get_customers", customerParams],
-    () => ApiCustomer.getCustomers(customerParams),
+    ["get_bookings", bookingParams],
+    () => ApiBookRoom.getBookings(bookingParams),
     {
       keepPreviousData: true,
     },
   );
 
   const handleChangeTable = (value: IChangeTable) => {
-    setCustomerParams({
-      ...customerParams,
+    setBookingParams({
+      ...bookingParams,
       page: value.page - 1,
       limit: value.pageSize,
     });
   };
 
-  const columns: ColumnsType<ICustomerRes> = [
+  const columns: ColumnsType<IBookingRes> = [
     {
       title: "STT",
       align: "center",
@@ -43,24 +44,28 @@ export default function RoomManagement() {
     },
     {
       title: "Tên khách hàng",
-      dataIndex: "name",
+      dataIndex: ["client", "name"],
       align: "center",
     },
     {
       title: "email",
-      dataIndex: "email",
+      dataIndex: ["client", "email"],
       align: "center",
     },
     {
       title: "Số điện thoại",
-      dataIndex: "tel",
+      dataIndex: ["client", "tel"],
       align: "center",
     },
     {
-      title: "Giới tính",
-      dataIndex: "sex",
+      title: "Ngày check-in",
       align: "center",
-      render: (value) => (value === "male" ? "Nam" : "Nữ"),
+      render: (_, record) => moment(record.checkin).format("DD-MM-YYYY"),
+    },
+    {
+      title: "Ngày check-out",
+      align: "center",
+      render: (_, record) => moment(record.checkout).format("DD-MM-YYYY"),
     },
   ];
 
@@ -71,7 +76,7 @@ export default function RoomManagement() {
           <InputSearchGlobal
             onChange={(e) => setSearchValue(e.target.value.trim())}
             onSearch={() =>
-              setCustomerParams({ ...customerParams, search: searchValue })
+              setBookingParams({ ...bookingParams, search: searchValue })
             }
           />
         </Space>

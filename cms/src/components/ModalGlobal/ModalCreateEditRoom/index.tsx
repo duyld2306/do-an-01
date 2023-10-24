@@ -1,10 +1,10 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Formik, FormikProps } from "formik";
 import { Col, Row, Upload } from "antd";
 import ModalGlobal from "..";
 import ApiRoom, { IRoomRes } from "@/api/ApiRoom";
 import { RcFile, UploadFile } from "antd/lib/upload";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Notification from "@/components/Notification";
 import FormGlobal, {
   FormItemGlobal,
@@ -13,6 +13,7 @@ import FormGlobal, {
   SelectFormikGlobal,
 } from "@/components/FormGlobal";
 import { RoomValidation } from "@/utils/validation/room";
+import ApiRoomFeature from "@/api/ApiRoomFeature";
 
 interface ICreateRomeBody {
   name: string;
@@ -33,8 +34,8 @@ export default function ModalCreateEditRoom({
   handleCloseModal,
   roomSelected,
 }: IModalCreateEditRoom) {
+  // const [fileList, setFileList] = useState<UploadFile<RcFile>[]>([]);
   const [blobs, setBlobs] = useState<{ id: string; blob: Blob }[]>([]);
-  console.log("blobs", blobs);
 
   const innerRef = useRef<FormikProps<ICreateRomeBody>>(null);
   const queryClient = useQueryClient();
@@ -43,9 +44,37 @@ export default function ModalCreateEditRoom({
     name: roomSelected?.name ?? "",
     price: roomSelected?.price ?? 0,
     description: roomSelected?.description ?? "",
-    featureRooms: roomSelected?.featureRooms ?? [],
+    featureRooms: roomSelected?.featureRooms?.map((item) => item.id) ?? [],
     files: roomSelected?.images ?? [],
   };
+
+  // useEffect(() => {
+  //   if (roomSelected?.images) {
+  //     const tempArray: UploadFile<RcFile>[] = [];
+  //     roomSelected?.images.forEach((item) => {
+  //       const urlSplit = item.split("/");
+  //       const fileName = urlSplit[urlSplit.length - 1];
+  //       tempArray.push({
+  //         uid: "-4",
+  //         name: fileName ?? "file name",
+  //         status: "done",
+  //         url: item,
+  //       });
+  //     });
+  //     setFileList(tempArray);
+  //   }
+  // }, [roomSelected]);
+
+  const { data: roomFeatures } = useQuery(["get_room_features"], () =>
+    ApiRoomFeature.getRoomFeatures(),
+  );
+
+  const convertRoomFeatures = useMemo(() => {
+    return roomFeatures?.results.map((item) => ({
+      value: item.id,
+      label: item.name,
+    }));
+  }, [roomFeatures]);
 
   const beforeUpload = (file: RcFile) => {
     const reader = new FileReader();
@@ -132,11 +161,12 @@ export default function ModalCreateEditRoom({
                   <FormItemGlobal name="description" label="Mô tả">
                     <InputFormikGlobal name="description" placeholder="Mô tả" />
                   </FormItemGlobal>
-                  <FormItemGlobal name="featureRooms" label="Tính năng">
+                  <FormItemGlobal name="featureRooms" label="Tiện nghi">
                     <SelectFormikGlobal
                       name="featureRooms"
-                      mode="tags"
-                      placeholder="Tính năng"
+                      mode="multiple"
+                      placeholder="Tiện nghi"
+                      options={convertRoomFeatures}
                     />
                   </FormItemGlobal>
                 </Col>
@@ -145,6 +175,7 @@ export default function ModalCreateEditRoom({
                 <Upload
                   listType="picture-card"
                   accept=".png,.jpg,.jpeg"
+                  // fileList={fileList}
                   beforeUpload={beforeUpload}
                   onRemove={onRemove}
                   multiple={true}

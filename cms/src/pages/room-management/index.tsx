@@ -1,4 +1,4 @@
-import ApiRoom, { IGetIRoomsParams, IRoomRes } from "@/api/ApiRoom";
+import ApiRoom, { IGetRoomsParams, IRoomRes } from "@/api/ApiRoom";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
 import ButtonGlobal from "@/components/ButtonGlobal";
 import ModalCreateEditRoom from "@/components/ModalGlobal/ModalCreateEditRoom";
@@ -15,7 +15,7 @@ import { useState } from "react";
 export default function RoomManagement() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const [roomParams, setRoomParams] = useState<IGetIRoomsParams>({
+  const [roomParams, setRoomParams] = useState<IGetRoomsParams>({
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
@@ -52,31 +52,34 @@ export default function RoomManagement() {
       title: "Tên phòng",
       dataIndex: "name",
       align: "center",
+      width: 250,
     },
     {
       title: "Mô tả",
       dataIndex: "description",
       align: "center",
+      width: 400,
     },
     {
       title: "Giá phòng (vnđ)",
       dataIndex: "price",
       align: "center",
+      width: 150,
       render: (value) => value?.toLocaleString(),
     },
     {
-      title: "Tính năng",
+      title: "Tiện nghi",
       align: "center",
-      // render: (_, record) => (
-      //   <div>
-      //     {record.featureRooms?.map((item, i) => <span key={i}>{item}</span>)}
-      //   </div>
-      // ),
+      render: (_, record) => {
+        const tempArray = record.featureRooms?.map((item) => item.name) ?? [];
+        return tempArray.join(", ");
+      },
     },
     {
       title: "Hành động",
       align: "center",
       width: 100,
+      fixed: "right",
       render: (_, record) => (
         <span
           className="p-2 cursor-pointer"
@@ -114,6 +117,7 @@ export default function RoomManagement() {
         dataSource={rooms?.results}
         columns={columns}
         onChangeTable={handleChangeTable}
+        scrollX={1200}
       />
       <ModalCreateEditRoom
         isOpenModal={isOpenModal}

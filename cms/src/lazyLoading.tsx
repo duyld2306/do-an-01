@@ -2,8 +2,14 @@ import React from "react";
 
 const PageNotFound = React.lazy(() => import("@/pages/404"));
 const RoomManagement = React.lazy(() => import("@/pages/room-management"));
+const BookingManagement = React.lazy(
+  () => import("@/pages/booking-management"),
+);
 const CustomerManagement = React.lazy(
   () => import("@/pages/customer-management"),
+);
+const ServiceManagement = React.lazy(
+  () => import("@/pages/service-management"),
 );
 
 export interface IRoute {
@@ -27,5 +33,15 @@ export const PUBLIC_ROUTES: IRoute[] = [
     path: "/customer-management",
     component: CustomerManagement,
     name: "Quản lý khách hàng",
+  },
+  {
+    path: "/bookings-management",
+    component: BookingManagement,
+    name: "Quản lý đặt phòng",
+  },
+  {
+    path: "/services-management",
+    component: ServiceManagement,
+    name: "Quản lý dịch vụ",
   },
 ];

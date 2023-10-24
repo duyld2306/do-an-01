@@ -1,6 +1,7 @@
-import { fetcherWithMetaData } from "./Fetcher";
+import { IRoomFeatureRes } from "./ApiRoomFeature";
+import { fetcher } from "./Fetcher";
 
-export interface IGetIRoomsParams {
+export interface IGetRoomsParams {
   page?: number;
   limit?: number;
   sort?: string[];
@@ -14,7 +15,7 @@ export interface IRoomRes {
   description: string;
   slug: string;
   images?: string[];
-  featureRooms?: number[];
+  featureRooms?: IRoomFeatureRes[];
 }
 
 export interface IGetRoomsRes {
@@ -27,19 +28,19 @@ export interface IGetRoomsRes {
   results: IRoomRes[];
 }
 
-const getRooms = (params?: IGetIRoomsParams): Promise<IGetRoomsRes> => {
-  return fetcherWithMetaData({ method: "get", url: "/room/list", params });
+const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {
+  return fetcher({ method: "get", url: "/room/list", params });
 };
 
 const createRoom = (data: FormData): Promise<IGetRoomsRes> => {
-  return fetcherWithMetaData(
+  return fetcher(
     { method: "post", url: "/room/save", data },
     { isFormData: true },
   );
 };
 
 const updateRoom = (data: FormData): Promise<IGetRoomsRes> => {
-  return fetcherWithMetaData(
+  return fetcher(
     { method: "post", url: "/room/update", data },
     { isFormData: true },
   );
