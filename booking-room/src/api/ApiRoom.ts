@@ -37,6 +37,7 @@ export interface IBookRoomBody {
   checkout: string;
   idRoom: string;
   paymentType: string;
+  quantity: number;
 }
 
 const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {

@@ -1,9 +1,9 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Formik, FormikProps } from "formik";
-import { Col, Row, Upload } from "antd";
+import { Col, Row } from "antd";
 import ModalGlobal from "..";
 import ApiRoom, { IRoomRes } from "@/api/ApiRoom";
-import { RcFile, UploadFile } from "antd/lib/upload";
+import Upload, { RcFile, UploadChangeParam, UploadFile } from "antd/lib/upload";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Notification from "@/components/Notification";
 import FormGlobal, {
@@ -20,7 +20,7 @@ interface ICreateRomeBody {
   price: number;
   description: string;
   featureRooms: number[];
-  files: string[];
+  files: RcFile[];
 }
 
 interface IModalCreateEditRoom {
@@ -34,39 +34,40 @@ export default function ModalCreateEditRoom({
   handleCloseModal,
   roomSelected,
 }: IModalCreateEditRoom) {
-  // const [fileList, setFileList] = useState<UploadFile<RcFile>[]>([]);
-  const [blobs, setBlobs] = useState<{ id: string; blob: Blob }[]>([]);
+  const [files, setFiles] = useState<UploadFile<RcFile>[]>([]);
 
   const innerRef = useRef<FormikProps<ICreateRomeBody>>(null);
   const queryClient = useQueryClient();
 
-  const initialValues: ICreateRomeBody = {
-    name: roomSelected?.name ?? "",
-    price: roomSelected?.price ?? 0,
-    description: roomSelected?.description ?? "",
-    featureRooms: roomSelected?.featureRooms?.map((item) => item.id) ?? [],
-    files: roomSelected?.images ?? [],
-  };
+  useEffect(() => {
+    if (roomSelected?.images) {
+      const tempArray: UploadFile<RcFile>[] = [];
+      roomSelected?.images.forEach((item, i) => {
+        const urlSplit = item.split("/");
+        const fileName = urlSplit[urlSplit.length - 1];
+        tempArray.push({
+          uid: `initial_${i}`,
+          name: fileName ?? "file name",
+          status: "done",
+          url: item,
+        });
+      });
+      setFiles(tempArray);
+    }
+  }, [roomSelected]);
 
-  // useEffect(() => {
-  //   if (roomSelected?.images) {
-  //     const tempArray: UploadFile<RcFile>[] = [];
-  //     roomSelected?.images.forEach((item) => {
-  //       const urlSplit = item.split("/");
-  //       const fileName = urlSplit[urlSplit.length - 1];
-  //       tempArray.push({
-  //         uid: "-4",
-  //         name: fileName ?? "file name",
-  //         status: "done",
-  //         url: item,
-  //       });
-  //     });
-  //     setFileList(tempArray);
-  //   }
-  // }, [roomSelected]);
+  const initialValues: ICreateRomeBody = useMemo(() => {
+    return {
+      name: roomSelected?.name ?? "",
+      price: roomSelected?.price ?? 0,
+      description: roomSelected?.description ?? "",
+      featureRooms: roomSelected?.featureRooms?.map((item) => item.id) ?? [],
+      files: [],
+    };
+  }, [roomSelected]);
 
   const { data: roomFeatures } = useQuery(["get_room_features"], () =>
-    ApiRoomFeature.getRoomFeatures(),
+    ApiRoomFeature.getRoomFeatures()
   );
 
   const convertRoomFeatures = useMemo(() => {
@@ -76,46 +77,41 @@ export default function ModalCreateEditRoom({
     }));
   }, [roomFeatures]);
 
-  const beforeUpload = (file: RcFile) => {
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const response = await fetch(reader.result as string);
-      const blob = await response.blob();
-      setBlobs((prevState) => {
-        const tempArray = [...prevState, { id: file.uid, blob }];
-        innerRef.current?.setFieldValue("files", tempArray);
-        return tempArray;
-      });
-    };
-    reader.readAsDataURL(file);
-    return false;
-  };
-
-  const onRemove = (file: UploadFile<RcFile>) => {
-    setBlobs((prevState) => {
-      const tempArray = prevState.filter((blob) => blob.id !== file.uid);
-      innerRef.current?.setFieldValue("files", tempArray);
-      return tempArray;
-    });
-  };
-
   const onCancel = () => {
     handleCloseModal();
-    setBlobs([]);
     innerRef.current?.resetForm();
   };
 
   const createRoomMutation = useMutation(ApiRoom.createRoom);
-  const handleSubmit = (values: ICreateRomeBody) => {
+  const updateRoomMutation = useMutation(ApiRoom.updateRoom);
+  const handleSubmit = async (values: ICreateRomeBody) => {
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-      if (key === "files") {
-        blobs.forEach((blob) => formData.append(key, blob.blob));
-      } else {
+      if (key !== "files") {
         formData.append(key, value);
+      } else {
+        values.files.forEach((item) => formData.append(key, item));
       }
     });
+    formData.append(
+      "images",
+      files
+        .filter((item) => item.uid.startsWith("initial"))
+        .map((item) => item.url)
+        .toString()
+    );
 
+    if (roomSelected) {
+      formData.append("id", roomSelected.id);
+      updateRoomMutation.mutate(formData, {
+        onSuccess: () => {
+          Notification.notificationSuccess("Thành công");
+          queryClient.refetchQueries(["get_rooms"]);
+          onCancel();
+        },
+      });
+      return;
+    }
     createRoomMutation.mutate(formData, {
       onSuccess: () => {
         Notification.notificationSuccess("Thành công");
@@ -131,16 +127,32 @@ export default function ModalCreateEditRoom({
       initialValues={initialValues}
       enableReinitialize
       onSubmit={handleSubmit}
-      validationSchema={RoomValidation}
+      validationSchema={RoomValidation(roomSelected ? "edit" : "create")}
     >
-      {({ handleSubmit }): JSX.Element => {
+      {({ handleSubmit, values, setFieldValue }): JSX.Element => {
+        const onChange = (info: UploadChangeParam<UploadFile<RcFile>>) => {
+          setFiles(info.fileList);
+          setFieldValue("files", [
+            ...values.files,
+            ...info.fileList
+              .filter((item) => !item.uid.startsWith("initial"))
+              .map((item) => item.originFileObj),
+          ]);
+        };
+
+        const onRemove = (file: UploadFile<RcFile>) => {
+          setFiles(files.filter((item) => item.uid !== file.uid));
+        };
+
         return (
           <ModalGlobal
             open={isOpenModal}
             title={roomSelected ? "Sửa thông tin phòng" : "Tạo phòng"}
             onOk={handleSubmit}
             onCancel={onCancel}
-            isLoadingOK={createRoomMutation.isLoading}
+            isLoadingOK={
+              createRoomMutation.isLoading || updateRoomMutation.isLoading
+            }
             width={1000}
           >
             <FormGlobal>
@@ -171,16 +183,22 @@ export default function ModalCreateEditRoom({
                   </FormItemGlobal>
                 </Col>
               </Row>
-              <FormItemGlobal name="files" label="Ảnh minh họa" required>
+              <FormItemGlobal
+                name="files"
+                label="Ảnh minh họa"
+                required={!roomSelected}
+              >
                 <Upload
+                  name="files"
                   listType="picture-card"
                   accept=".png,.jpg,.jpeg"
-                  // fileList={fileList}
-                  beforeUpload={beforeUpload}
+                  fileList={files}
+                  beforeUpload={() => false}
+                  onChange={onChange}
                   onRemove={onRemove}
                   multiple={true}
                 >
-                  {blobs.length < 5 && "Upload"}
+                  {values.files.length < 5 && "Upload"}
                 </Upload>
               </FormItemGlobal>
             </FormGlobal>

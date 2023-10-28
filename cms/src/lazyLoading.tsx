@@ -3,13 +3,16 @@ import React from "react";
 const PageNotFound = React.lazy(() => import("@/pages/404"));
 const RoomManagement = React.lazy(() => import("@/pages/room-management"));
 const BookingManagement = React.lazy(
-  () => import("@/pages/booking-management"),
+  () => import("@/pages/booking-management")
 );
 const CustomerManagement = React.lazy(
-  () => import("@/pages/customer-management"),
+  () => import("@/pages/customer-management")
 );
 const ServiceManagement = React.lazy(
-  () => import("@/pages/service-management"),
+  () => import("@/pages/service-management")
+);
+const PromotionManagement = React.lazy(
+  () => import("@/pages/promotion-management")
 );
 
 export interface IRoute {
@@ -35,13 +38,18 @@ export const PUBLIC_ROUTES: IRoute[] = [
     name: "Quản lý khách hàng",
   },
   {
-    path: "/bookings-management",
+    path: "/booking-management",
     component: BookingManagement,
     name: "Quản lý đặt phòng",
   },
   {
-    path: "/services-management",
+    path: "/service-management",
     component: ServiceManagement,
     name: "Quản lý dịch vụ",
+  },
+  {
+    path: "/promotion-management",
+    component: PromotionManagement,
+    name: "Quản lý khuyến mại",
   },
 ];

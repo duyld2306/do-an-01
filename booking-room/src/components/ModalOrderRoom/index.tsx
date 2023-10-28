@@ -5,6 +5,7 @@ import FormGlobal, {
   DatePickerFormikGlobal,
   FormItemGlobal,
   InputFormikGlobal,
+  InputNumberGlobal,
   RadioGroupFormikGlobal,
   SelectFormikGlobal,
 } from "../FormGlobal";
@@ -25,6 +26,7 @@ interface IRoomValue {
   checkout: Moment;
   idRoom: string;
   paymentType: string;
+  quantity: number;
 }
 
 interface IModalOrderRoomProps {
@@ -49,6 +51,7 @@ export default function ModalOrderRoom({
     checkout: moment().startOf("day").add(1, "day"),
     idRoom: roomSelected.id,
     paymentType: "Momo",
+    quantity: 1,
   };
 
   const onCancel = () => {
@@ -57,7 +60,11 @@ export default function ModalOrderRoom({
   };
 
   const calculateNight = (sd: Moment, ed: Moment) => {
-    return ed.diff(sd, "days") * (roomSelected.price ?? 0);
+    return (
+      ed.diff(sd, "days") *
+      (roomSelected.price ?? 0) *
+      (innerRef.current?.values.quantity ?? 0)
+    ).toLocaleString();
   };
 
   const bookRoomMutation = useMutation(ApiRoom.bookRoom);
@@ -234,7 +241,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkin",
-                              date?.startOf("day"),
+                              date?.startOf("day")
                             );
                           }}
                         />
@@ -253,9 +260,20 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkout",
-                              date?.startOf("day"),
+                              date?.startOf("day")
                             );
                           }}
+                        />
+                      </FormItemGlobal>
+                    </Col>
+                  </Row>
+                  <Row gutter={[8, 0]}>
+                    <Col span={12}>
+                      <FormItemGlobal name="quantity" label="quantity" required>
+                        <InputNumberGlobal
+                          name="quantity"
+                          placeholder="Số lượng"
+                          min={1}
                         />
                       </FormItemGlobal>
                     </Col>
@@ -264,7 +282,7 @@ export default function ModalOrderRoom({
                     Số tiền thanh toán:{" "}
                     {calculateNight(
                       formikProps.values.checkin,
-                      formikProps.values.checkout,
+                      formikProps.values.checkout
                     )}{" "}
                     VNĐ
                   </span>
