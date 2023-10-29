@@ -1,6 +1,5 @@
 import React from "react";
 
-const PageNotFound = React.lazy(() => import("@/pages/404"));
 const RoomManagement = React.lazy(() => import("@/pages/room-management"));
 const BookingManagement = React.lazy(
   () => import("@/pages/booking-management")
@@ -22,11 +21,6 @@ export interface IRoute {
 }
 
 export const PUBLIC_ROUTES: IRoute[] = [
-  {
-    path: "*",
-    component: PageNotFound,
-    name: "",
-  },
   {
     path: "/room-management",
     component: RoomManagement,
