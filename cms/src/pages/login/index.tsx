@@ -17,7 +17,6 @@ export default function Login() {
 
   const loginMutation = useMutation(ApiUser.login);
   const handleLogin = (values: ILoginBody): void => {
-    console.log("abc");
     loginMutation.mutate(
       { email: values.email, password: values.password },
       {

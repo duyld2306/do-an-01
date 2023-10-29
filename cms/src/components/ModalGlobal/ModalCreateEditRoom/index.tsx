@@ -9,7 +9,7 @@ import Notification from "@/components/Notification";
 import FormGlobal, {
   FormItemGlobal,
   InputFormikGlobal,
-  InputNumberGlobal,
+  InputNumberFormikGlobal,
   SelectFormikGlobal,
 } from "@/components/FormGlobal";
 import { RoomValidation } from "@/utils/validation/room";
@@ -162,7 +162,7 @@ export default function ModalCreateEditRoom({
                     <InputFormikGlobal name="name" placeholder="Tên phòng" />
                   </FormItemGlobal>
                   <FormItemGlobal name="price" label="Giá phòng (vnđ)">
-                    <InputNumberGlobal
+                    <InputNumberFormikGlobal
                       name="price"
                       placeholder="Giá phòng (vnđ)"
                       min={0}

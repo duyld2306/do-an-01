@@ -15,10 +15,34 @@ const PromotionManagement = React.lazy(
 );
 const Statistic = React.lazy(() => import("@/pages/statistic"));
 
+export const groupPermission1: (
+  | "ROLE_ADMIN"
+  | "ROLE_USER"
+  | "ROLE_RECEPTIONIST"
+)[] = ["ROLE_ADMIN", "ROLE_USER"];
+
+export const groupPermission2: (
+  | "ROLE_ADMIN"
+  | "ROLE_USER"
+  | "ROLE_RECEPTIONIST"
+)[] = ["ROLE_ADMIN"];
+
+export function checkPermission(
+  groupPermission: ("ROLE_ADMIN" | "ROLE_USER" | "ROLE_RECEPTIONIST")[],
+  userRole?: ("ROLE_ADMIN" | "ROLE_USER" | "ROLE_RECEPTIONIST")[],
+) {
+  console.log(userRole);
+  if (userRole?.[0]) {
+    return groupPermission.includes(userRole?.[0]);
+  }
+  return false;
+}
+
 export interface IRoute {
   path: string;
   component: React.LazyExoticComponent<() => JSX.Element>;
   name: string;
+  roles?: string[];
 }
 
 export const PUBLIC_ROUTES: IRoute[] = [

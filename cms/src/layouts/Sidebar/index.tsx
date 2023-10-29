@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 import { useGetMenuState } from "@/redux/slices/MenuSlice";
+import store from "@/redux/store";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -25,8 +26,15 @@ function getItem(
 }
 
 function createItems(routes: IRoute[]): MenuItem[] {
+  const { roles } = store.getState().user;
   return routes.map((route: IRoute) => {
-    return getItem(route.name, route.path);
+    if (!route.roles) {
+      return getItem(route.name, route.path);
+    }
+    if (route.roles && roles?.[0] && route.roles.includes(roles?.[0])) {
+      return getItem(route.name, route.path);
+    }
+    return null;
   });
 }
 

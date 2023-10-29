@@ -32,7 +32,7 @@ function InputPasswordFormikGlobal(props: FormikFieldProps & PasswordProps) {
   return <Input.Password {...props} className="input-formik-global" />;
 }
 
-function InputNumberGlobal(props: InputNumberProps) {
+function InputNumberFormikGlobal(props: InputNumberProps) {
   const parseInteger = (value?: string): number => {
     if (!value && value !== "0") {
       return 0;
@@ -141,7 +141,7 @@ export default function FormGlobal(props: FormProps): JSX.Element {
 export {
   InputFormikGlobal,
   InputPasswordFormikGlobal,
-  InputNumberGlobal,
+  InputNumberFormikGlobal,
   SelectFormikGlobal,
   TextAreaFormikGlobal,
   DatePickerFormikGlobal,

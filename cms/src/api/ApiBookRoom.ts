@@ -10,6 +10,14 @@ export interface IGetBookingsParams {
   filter?: string;
 }
 
+interface IUsedServices {
+  id: string;
+  name: "Dich vu 001";
+  quantity: 1;
+  price: 10000;
+  createdAt: string;
+}
+
 export interface IBookingRes {
   id: string;
   bookingDate: string;
@@ -18,10 +26,11 @@ export interface IBookingRes {
   checkin: string;
   checkout: string;
   price: string;
-  usedServices?: string[];
+  usedServices?: IUsedServices[];
   client?: ICustomerRes;
   room?: IRoomRes;
   checkedIn: boolean;
+  bookingState: "Init" | "AdminInit" | "Success" | "Done" | "Reject";
 }
 
 export interface IGetBookingsRes {
@@ -34,10 +43,52 @@ export interface IGetBookingsRes {
   results: IBookingRes[];
 }
 
+interface ICreateBookingBody {
+  firstName: string;
+  lastName: string;
+  sex: string;
+  email: string;
+  tel: string;
+  checkin: string;
+  checkout: string;
+  quantity: number;
+  idRoom?: string;
+  paymentType: "Momo" | "Vnpay" | "Zalopay";
+}
+
+interface IUpdateServiceBody {
+  id: string;
+  body: { idService?: string; quantity?: number }[];
+}
+
 function getBookings(params?: IGetBookingsParams): Promise<IGetBookingsRes> {
   return fetcher({ url: "booking/list", method: "get", params });
 }
 
+function createBooking(data: ICreateBookingBody) {
+  return fetcher({ url: "booking/admin-booking", method: "post", data });
+}
+
+function updateService(data: IUpdateServiceBody) {
+  return fetcher({
+    url: `booking/update-service/${data.id}`,
+    method: "put",
+    data: data.body,
+  });
+}
+
+function checkIn(id: string) {
+  return fetcher({ url: `booking/check-in/${id}`, method: "post" });
+}
+
+function checkOut(id: string) {
+  return fetcher({ url: `booking/check-out/${id}`, method: "post" });
+}
+
 export default {
   getBookings,
+  createBooking,
+  updateService,
+  checkIn,
+  checkOut,
 };

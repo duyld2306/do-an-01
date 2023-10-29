@@ -10,7 +10,7 @@ import FormGlobal, {
   DatePickerFormikGlobal,
   FormItemGlobal,
   InputFormikGlobal,
-  InputNumberGlobal,
+  InputNumberFormikGlobal,
 } from "@/components/FormGlobal";
 import moment, { Moment } from "moment";
 import { PromotionValidation } from "@/utils/validation/promotion";
@@ -162,7 +162,7 @@ export default function ModalCreateEditPromotion({
                     />
                   </FormItemGlobal>
                   <FormItemGlobal name="discount" label="Discount" required>
-                    <InputNumberGlobal
+                    <InputNumberFormikGlobal
                       name="discount"
                       placeholder="Discount"
                       min={0}

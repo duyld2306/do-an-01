@@ -5,7 +5,9 @@ import { toggleMenu, useGetMenuState } from "@/redux/slices/MenuSlice";
 import { useCallback, useMemo } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { logoutUser } from "@/redux/slices/UserSlice";
+import store from "@/redux/store";
 
 const findPath = (routes: IRoute[], path: string): IRoute[] | null => {
   for (const route of routes) {
@@ -37,23 +39,26 @@ const RenderBreadcrumb = ({ path }: IRenderBreadcrumbProps) => {
 
 function Navbar() {
   const isOpen = useGetMenuState();
-  // const user = useGetUserRedux();
   const dispatch = useDispatch();
-  // const logout = useLogout();
   const location = useLocation();
+  const navigate = useNavigate();
+  const user = store.getState().user;
 
   const handleToggleMenu = useCallback(() => {
     dispatch(toggleMenu());
   }, []);
 
-  const handleGoogleLogOut = useCallback(async () => {}, []);
+  const handleLogOut = () => {
+    dispatch(logoutUser());
+    navigate("/login");
+  };
 
   const dropdownItems: MenuProps["items"] = useMemo(() => {
     return [
       {
         key: "1",
         label: "Logout",
-        onClick: handleGoogleLogOut,
+        onClick: handleLogOut,
       },
     ];
   }, []);
@@ -76,11 +81,14 @@ function Navbar() {
             className="rounded-full"
             width={40}
             height={40}
-            src="https://d1hjkbq40fs2x4.cloudfront.net/2016-01-31/files/1045.jpg"
+            src={
+              user.avatar ??
+              "https://d1hjkbq40fs2x4.cloudfront.net/2016-01-31/files/1045.jpg"
+            }
             alt="user avatar"
             preview={false}
           />
-          <span>Nguyen Van A</span>
+          <span>{user.name}</span>
         </div>
       </Dropdown>
     </div>

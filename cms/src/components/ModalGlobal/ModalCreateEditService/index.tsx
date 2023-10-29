@@ -8,7 +8,7 @@ import Notification from "@/components/Notification";
 import FormGlobal, {
   FormItemGlobal,
   InputFormikGlobal,
-  InputNumberGlobal,
+  InputNumberFormikGlobal,
 } from "@/components/FormGlobal";
 import { ServiceValidation } from "@/utils/validation/service";
 
@@ -96,7 +96,7 @@ export default function ModalCreateEditService({
                     label="Giá dịch vụ (vnđ)"
                     required
                   >
-                    <InputNumberGlobal
+                    <InputNumberFormikGlobal
                       name="price"
                       placeholder="Giá dịch vụ (vnđ)"
                       min={0}

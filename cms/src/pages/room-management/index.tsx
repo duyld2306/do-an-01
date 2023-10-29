@@ -6,6 +6,8 @@ import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
+import { checkPermission, groupPermission1 } from "@/lazyLoading";
+import store from "@/redux/store";
 import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
@@ -80,18 +82,19 @@ export default function RoomManagement() {
       align: "center",
       width: 100,
       fixed: "right",
-      render: (_, record) => (
-        <span
-          className="p-2 cursor-pointer"
-          role="presentation"
-          onClick={() => {
-            setRoomSelected(record);
-            setIsOpenModal(true);
-          }}
-        >
-          <EditOutlined />
-        </span>
-      ),
+      render: (_, record) =>
+        checkPermission(groupPermission1, store.getState().user.roles) && (
+          <span
+            className="p-2 cursor-pointer"
+            role="presentation"
+            onClick={() => {
+              setRoomSelected(record);
+              setIsOpenModal(true);
+            }}
+          >
+            <EditOutlined />
+          </span>
+        ),
     },
   ];
 

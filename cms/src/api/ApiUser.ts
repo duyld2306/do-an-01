@@ -11,9 +11,10 @@ export interface ILoginRes {
   name?: string;
   address?: string;
   phoneNumber?: string;
-  roles?: string[];
+  roles?: ("ROLE_ADMIN" | "ROLE_USER" | "ROLE_RECEPTIONIST")[];
   accessToken?: string;
   active?: true;
+  avatar?: string;
 }
 
 function login(data: ILoginBody): Promise<ILoginRes> {
