@@ -1,20 +1,25 @@
 import ApiService, { IGetServicesParams, IServiceRes } from "@/api/ApiService";
 import { InputSearchGlobal } from "@/components/AntdGlobal";
+import ButtonGlobal from "@/components/ButtonGlobal";
+import ModalCreateEditService from "@/components/ModalGlobal/ModalCreateEditService";
 import TableGlobal, {
   IChangeTable,
   TABLE_DEFAULT_VALUE,
 } from "@/components/TableGlobal";
+import { EditOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Space } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { useState } from "react";
 
 export default function RoomManagement() {
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [serviceParams, setServiceParams] = useState<IGetServicesParams>({
     page: 0,
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
+  const [selectedService, setSelectedService] = useState<IServiceRes>();
 
   const { data: customers } = useQuery(
     ["get_services", serviceParams],
@@ -23,6 +28,11 @@ export default function RoomManagement() {
       keepPreviousData: true,
     },
   );
+
+  const handleCloseModal = () => {
+    setSelectedService(undefined);
+    setIsOpenModal(false);
+  };
 
   const handleChangeTable = (value: IChangeTable) => {
     setServiceParams({
@@ -58,6 +68,24 @@ export default function RoomManagement() {
       dataIndex: "description",
       align: "center",
     },
+    {
+      title: "Hành động",
+      align: "center",
+      width: 100,
+      fixed: "right",
+      render: (_, record) => (
+        <span
+          className="p-2 cursor-pointer"
+          role="presentation"
+          onClick={() => {
+            setSelectedService(record);
+            setIsOpenModal(true);
+          }}
+        >
+          <EditOutlined />
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -71,11 +99,22 @@ export default function RoomManagement() {
             }
           />
         </Space>
+        <Space>
+          <ButtonGlobal
+            title="Thêm dịch vụ"
+            onClick={() => setIsOpenModal(true)}
+          />
+        </Space>
       </Row>
       <TableGlobal
         dataSource={customers?.results}
         columns={columns}
         onChangeTable={handleChangeTable}
+      />
+      <ModalCreateEditService
+        isOpenModal={isOpenModal}
+        handleCloseModal={handleCloseModal}
+        selectedService={selectedService}
       />
     </div>
   );

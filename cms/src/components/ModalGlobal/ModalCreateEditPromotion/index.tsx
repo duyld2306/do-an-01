@@ -117,7 +117,7 @@ export default function ModalCreateEditPromotion({
       enableReinitialize
       onSubmit={handleSubmit}
       validationSchema={PromotionValidation(
-        selectedPromotion ? "edit" : "create"
+        selectedPromotion ? "edit" : "create",
       )}
     >
       {({ handleSubmit, setFieldValue }): JSX.Element => {
@@ -130,7 +130,9 @@ export default function ModalCreateEditPromotion({
         return (
           <ModalGlobal
             open={isOpenModal}
-            title={selectedPromotion ? "Sửa thông tin phòng" : "Tạo phòng"}
+            title={
+              selectedPromotion ? "Sửa thông tin khuyến mại" : "Tạo khuyến mại"
+            }
             onOk={handleSubmit}
             onCancel={onCancel}
             isLoadingOK={
@@ -148,13 +150,18 @@ export default function ModalCreateEditPromotion({
                       placeholder="Tên khuyến mại"
                     />
                   </FormItemGlobal>
-                  <FormItemGlobal name="startDate" label="Ngày bắt đầu">
+                  <FormItemGlobal
+                    name="startDate"
+                    label="Ngày bắt đầu"
+                    required
+                  >
                     <DatePickerFormikGlobal
                       name="startDate"
                       placeholder="Ngày bắt đầu"
+                      allowClear={false}
                     />
                   </FormItemGlobal>
-                  <FormItemGlobal name="discount" label="Discount">
+                  <FormItemGlobal name="discount" label="Discount" required>
                     <InputNumberGlobal
                       name="discount"
                       placeholder="Discount"
@@ -166,21 +173,22 @@ export default function ModalCreateEditPromotion({
                   <FormItemGlobal name="description" label="Mô tả">
                     <InputFormikGlobal name="description" placeholder="Mô tả" />
                   </FormItemGlobal>
-                  <FormItemGlobal name="endDate" label="Ngày kết thúc">
+                  <FormItemGlobal name="endDate" label="Ngày kết thúc" required>
                     <DatePickerFormikGlobal
                       name="endDate"
                       placeholder="Ngày kết thúc"
+                      allowClear={false}
                     />
                   </FormItemGlobal>
                 </Col>
               </Row>
               <FormItemGlobal
-                name="files"
+                name="file"
                 label="Ảnh minh họa"
                 required={!selectedPromotion}
               >
                 <Upload
-                  name="files"
+                  name="file"
                   listType="picture-card"
                   accept=".png,.jpg,.jpeg"
                   fileList={files}

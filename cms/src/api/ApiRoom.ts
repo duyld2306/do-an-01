@@ -35,14 +35,14 @@ const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {
 const createRoom = (data: FormData): Promise<IGetRoomsRes> => {
   return fetcher(
     { method: "post", url: "/room/save", data },
-    { isFormData: true }
+    { isFormData: true },
   );
 };
 
 const updateRoom = (data: FormData): Promise<IGetRoomsRes> => {
   return fetcher(
     { method: "put", url: "/room/update", data },
-    { isFormData: true }
+    { isFormData: true },
   );
 };
 

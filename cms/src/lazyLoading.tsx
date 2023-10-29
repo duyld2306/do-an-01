@@ -2,17 +2,18 @@ import React from "react";
 
 const RoomManagement = React.lazy(() => import("@/pages/room-management"));
 const BookingManagement = React.lazy(
-  () => import("@/pages/booking-management")
+  () => import("@/pages/booking-management"),
 );
 const CustomerManagement = React.lazy(
-  () => import("@/pages/customer-management")
+  () => import("@/pages/customer-management"),
 );
 const ServiceManagement = React.lazy(
-  () => import("@/pages/service-management")
+  () => import("@/pages/service-management"),
 );
 const PromotionManagement = React.lazy(
-  () => import("@/pages/promotion-management")
+  () => import("@/pages/promotion-management"),
 );
+const Statistic = React.lazy(() => import("@/pages/statistic"));
 
 export interface IRoute {
   path: string;
@@ -45,5 +46,10 @@ export const PUBLIC_ROUTES: IRoute[] = [
     path: "/promotion-management",
     component: PromotionManagement,
     name: "Quản lý khuyến mại",
+  },
+  {
+    path: "/statistic",
+    component: Statistic,
+    name: "Thống kê",
   },
 ];

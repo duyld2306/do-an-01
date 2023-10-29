@@ -29,7 +29,7 @@ export default function PromotionManagement() {
     () => ApiPromotion.getPromotions(promotionParams),
     {
       keepPreviousData: true,
-    }
+    },
   );
 
   const handleCloseModal = () => {
@@ -107,7 +107,7 @@ export default function PromotionManagement() {
         </Space>
         <Space>
           <ButtonGlobal
-            title="Thêm phòng ban"
+            title="Thêm khyến mại"
             onClick={() => setIsOpenModal(true)}
           />
         </Space>

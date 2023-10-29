@@ -3,21 +3,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 
 import { IRootState } from "../store";
+import { ILoginRes } from "@/api/ApiUser";
 
-export interface IAccountInfo {
-  accessToken?: string;
-  displayName?: string;
-  email?: string;
-  photoURL?: string;
-}
-
-const initialState: IAccountInfo = {};
+const initialState: ILoginRes = {};
 
 const UserSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loginUser: (_, action: PayloadAction<IAccountInfo>) => {
+    loginUser: (_, action: PayloadAction<ILoginRes>) => {
       return action.payload;
     },
     logoutUser: () => {

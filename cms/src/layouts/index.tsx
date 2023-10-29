@@ -7,12 +7,13 @@ import Main from "./main";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PUBLIC_ROUTES } from "@/lazyLoading";
 import { useEffect } from "react";
+import ApiUser from "@/api/ApiUser";
 
 function LayoutWrapper() {
   const navigate = useNavigate();
   const location = useLocation();
   const isDashboardLayout = PUBLIC_ROUTES.find(
-    (item) => item.path === location.pathname
+    (item) => item.path === location.pathname,
   );
 
   useEffect(() => {
@@ -20,6 +21,14 @@ function LayoutWrapper() {
       navigate("/room-management");
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (ApiUser.isLogin() && location.pathname === "/login") {
+      navigate("/");
+    } else if (!ApiUser.isLogin()) {
+      navigate("/login");
+    }
+  }, [ApiUser.isLogin()]);
 
   return (
     <div className="wrapper">

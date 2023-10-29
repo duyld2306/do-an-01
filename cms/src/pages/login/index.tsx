@@ -1,10 +1,11 @@
 import "./index.scss";
-import ApiUser, { ILoginBody } from "@/api/ApiUser";
+import ApiUser, { ILoginBody, ILoginRes } from "@/api/ApiUser";
 import FormGlobal, {
   FormItemGlobal,
   InputFormikGlobal,
   InputPasswordFormikGlobal,
 } from "@/components/FormGlobal";
+import { loginUser } from "@/redux/slices/UserSlice";
 import { LoginValidation } from "@/utils/validation/login";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "antd";
@@ -13,24 +14,24 @@ import { useDispatch } from "react-redux";
 
 export default function Login() {
   const dispatch = useDispatch();
-  const loginMutation = useMutation(ApiUser.login);
 
+  const loginMutation = useMutation(ApiUser.login);
   const handleLogin = (values: ILoginBody): void => {
+    console.log("abc");
     loginMutation.mutate(
-      { username: values.username, password: values.password }
-      // {
-      //   onSuccess: (res: IAccountInfo) => {
-      //     dispatch(loginUser({ ...res }));
-      //     localStorage.setItem("role", res.role?.id?.toString() || "0");
-      //     window.location.replace("/");
-      //   },
-      // }
+      { email: values.email, password: values.password },
+      {
+        onSuccess: (res: ILoginRes) => {
+          dispatch(loginUser({ ...res }));
+          window.location.replace("/");
+        },
+      },
     );
   };
 
   return (
     <Formik
-      initialValues={{ username: "", password: "" }}
+      initialValues={{ email: "", password: "" }}
       validationSchema={LoginValidation}
       onSubmit={handleLogin}
     >
@@ -51,6 +52,7 @@ export default function Login() {
               <Button
                 className="mt-5 w-full"
                 type="primary"
+                onClick={() => handleSubmit()}
                 loading={loginMutation.isLoading}
               >
                 Đăng nhập

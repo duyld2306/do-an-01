@@ -29,7 +29,7 @@ export interface IGetPromotionsRes {
 }
 
 const getPromotions = (
-  params?: IGetPromotionsParams
+  params?: IGetPromotionsParams,
 ): Promise<IGetPromotionsRes> => {
   return fetcher({ method: "get", url: "/promotion/list", params });
 };
@@ -37,14 +37,14 @@ const getPromotions = (
 const createPromotion = (data: FormData) => {
   return fetcher(
     { method: "post", url: "/promotion", data },
-    { isFormData: true }
+    { isFormData: true },
   );
 };
 
 const updatePromotion = (data: FormData) => {
   return fetcher(
     { method: "path", url: "/promotion", data },
-    { isFormData: true }
+    { isFormData: true },
   );
 };
 

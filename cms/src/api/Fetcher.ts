@@ -5,6 +5,7 @@ interface IFetcherOptions {
   token?: string;
   withToken?: boolean;
   displayError?: boolean;
+  isXWWWForm?: boolean;
   isFormData?: boolean;
 }
 
@@ -17,13 +18,13 @@ export interface IResponseDTOWithMetaData<T> {
 
 export interface IDataError {
   errorCode: string;
-  errorMessage: string;
+  message: string;
 }
 
 function handleError(dataError: IDataError) {
   try {
-    const { errorCode } = dataError;
-    Notification.notificationError(errorCode);
+    const { message } = dataError;
+    Notification.notificationError(message);
   } catch (e) {
     console.warn(e);
     Notification.notificationError("Something is wrong. Please try again");
@@ -37,6 +38,7 @@ export function fetcher<T>(
   const defaultOptions: IFetcherOptions = {
     displayError: true,
     isFormData: false,
+    isXWWWForm: false,
     withToken: false,
     ...options,
   };
@@ -47,6 +49,8 @@ export function fetcher<T>(
     headers: {
       "Content-Type": defaultOptions.isFormData
         ? "multipart/form-data"
+        : defaultOptions.isXWWWForm
+        ? "application/x-www-form-urlencoded"
         : "application/json",
     },
   });
@@ -65,7 +69,7 @@ export function fetcher<T>(
           if (response.data.data === undefined) {
             const dataEmpty: IDataError = {
               errorCode: "ERROR???",
-              errorMessage: "Data is empty",
+              message: "Data is empty",
             };
             if (defaultOptions.displayError) {
               handleError(dataEmpty);
@@ -78,7 +82,7 @@ export function fetcher<T>(
         }
         const dataError: IDataError = {
           errorCode: response.data.errorCode,
-          errorMessage: response.data.errorCode,
+          message: response.data.message,
         };
 
         if (defaultOptions.displayError) {
@@ -90,7 +94,7 @@ export function fetcher<T>(
         if (axios.isAxiosError(error)) {
           const somethingsWrong: IDataError = {
             errorCode: "ERROR???",
-            errorMessage: "Somethings Wrong",
+            message: "Somethings Wrong",
           };
           const dataError: IDataError =
             (error?.response?.data as IDataError) ?? somethingsWrong;

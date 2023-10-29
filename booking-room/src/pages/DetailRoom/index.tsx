@@ -17,7 +17,7 @@ export default function DetailRoom() {
   const { data: room } = useQuery(
     ["get_room", slug],
     () => ApiRoom.getRoom(slug),
-    { enabled: !!slug }
+    { enabled: !!slug },
   );
 
   const { data: rooms } = useQuery(["get_rooms_1"], () => ApiRoom.getRooms());

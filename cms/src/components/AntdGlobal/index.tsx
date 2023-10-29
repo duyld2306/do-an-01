@@ -1,5 +1,5 @@
 import "./index.scss";
-import { Input } from "antd";
+import { Input, Select, SelectProps } from "antd";
 import { SearchProps } from "antd/lib/input";
 
 function InputSearchGlobal({ className, ...props }: SearchProps): JSX.Element {
@@ -13,4 +13,23 @@ function InputSearchGlobal({ className, ...props }: SearchProps): JSX.Element {
   );
 }
 
-export { InputSearchGlobal };
+function SelectGlobal({ className, ...props }: SelectProps) {
+  return (
+    <Select
+      dropdownStyle={{
+        borderRadius: "5px",
+      }}
+      allowClear
+      showSearch
+      filterOption={(inputValue, option): boolean =>
+        String(option?.label)
+          ?.toLowerCase()
+          ?.includes(inputValue.toLowerCase())
+      }
+      className={`select-global ${className}`}
+      {...props}
+    />
+  );
+}
+
+export { InputSearchGlobal, SelectGlobal };
