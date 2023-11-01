@@ -13,6 +13,13 @@ export interface IRoomFeatureRes {
   name: string;
 }
 
+export interface IRoomName {
+  id: string;
+  name: string;
+  createdAt: Date;
+  isBooking: boolean;
+}
+
 export interface IGetRoomFeaturesRes {
   metadata: {
     pageNumber: number;
@@ -24,7 +31,7 @@ export interface IGetRoomFeaturesRes {
 }
 
 function getRoomFeatures(
-  params?: IGetRoomFeaturesParams,
+  params?: IGetRoomFeaturesParams
 ): Promise<IGetRoomFeaturesRes> {
   return fetcher({ url: "room/list-feature-room", method: "get", params });
 }

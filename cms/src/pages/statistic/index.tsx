@@ -22,7 +22,7 @@ function ServiceStatistic() {
     }
     const daysInMonth = moment(
       `${serviceStatisticParams.year}-${serviceStatisticParams.month}`,
-      "YYYY-M",
+      "YYYY-M"
     ).daysInMonth();
     const daysArray = Array.from({ length: daysInMonth }, (_, index) => ({
       label: index + 1 + "",
@@ -33,7 +33,7 @@ function ServiceStatistic() {
 
   const { data: serviceStatistic } = useQuery(
     ["get_service_statistic", [serviceStatisticParams]],
-    () => ApiStatistic.getServiceStatistic(serviceStatisticParams),
+    () => ApiStatistic.getServiceStatistic(serviceStatisticParams)
   );
 
   const config = {
@@ -123,7 +123,7 @@ function RoomStatistic() {
     }
     const daysInMonth = moment(
       `${roomStatisticParams.year}-${roomStatisticParams.month}`,
-      "YYYY-M",
+      "YYYY-M"
     ).daysInMonth();
     const daysArray = Array.from({ length: daysInMonth }, (_, index) => ({
       label: index + 1 + "",
@@ -134,7 +134,7 @@ function RoomStatistic() {
 
   const { data: roomStatistic } = useQuery(
     ["get_room_statistic", [roomStatisticParams]],
-    () => ApiStatistic.getRoomStatistic(roomStatisticParams),
+    () => ApiStatistic.getRoomStatistic(roomStatisticParams)
   );
 
   const config = {
@@ -216,7 +216,7 @@ function RoomStatistic() {
 function RoomStatisticInCurrentWeek() {
   const { data: roomStatisticInCurrentWeek } = useQuery(
     ["get_room_statistic_in_current_week"],
-    () => ApiStatistic.getRoomStatisticInCurrentWeek(),
+    () => ApiStatistic.getRoomStatisticInCurrentWeek()
   );
 
   const config = {
@@ -246,7 +246,7 @@ function RevenueStatistic() {
 
   const { data: revenueStatistic } = useQuery(
     ["get_revenue_statistic", [revenueStatisticParams]],
-    () => ApiStatistic.getRevenueStatistic(revenueStatisticParams),
+    () => ApiStatistic.getRevenueStatistic(revenueStatisticParams)
   );
 
   const config = {

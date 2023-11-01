@@ -1,4 +1,4 @@
-import { IRoomFeatureRes } from "./ApiRoomFeature";
+import { IRoomFeatureRes, IRoomName } from "./ApiRoomFeature";
 import { fetcher } from "./Fetcher";
 
 export interface IGetRoomsParams {
@@ -16,6 +16,7 @@ export interface IRoomRes {
   slug: string;
   images?: string[];
   featureRooms?: IRoomFeatureRes[];
+  roomNames?: IRoomName[];
 }
 
 export interface IGetRoomsRes {
@@ -28,6 +29,11 @@ export interface IGetRoomsRes {
   results: IRoomRes[];
 }
 
+interface IUpdateRoomNameBody {
+  id: string;
+  body: { id?: string; name?: string }[];
+}
+
 const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {
   return fetcher({ method: "get", url: "/room/list", params });
 };
@@ -35,19 +41,28 @@ const getRooms = (params?: IGetRoomsParams): Promise<IGetRoomsRes> => {
 const createRoom = (data: FormData): Promise<IGetRoomsRes> => {
   return fetcher(
     { method: "post", url: "/room/save", data },
-    { isFormData: true },
+    { isFormData: true }
   );
 };
 
 const updateRoom = (data: FormData): Promise<IGetRoomsRes> => {
   return fetcher(
     { method: "put", url: "/room/update", data },
-    { isFormData: true },
+    { isFormData: true }
   );
+};
+
+const updateRoomName = (data: IUpdateRoomNameBody): Promise<IGetRoomsRes> => {
+  return fetcher({
+    method: "post",
+    url: "/room/save-room-name/" + data.id,
+    data: data.body,
+  });
 };
 
 export default {
   getRooms,
   createRoom,
   updateRoom,
+  updateRoomName,
 };

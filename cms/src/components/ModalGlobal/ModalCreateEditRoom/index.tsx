@@ -67,7 +67,7 @@ export default function ModalCreateEditRoom({
   }, [roomSelected]);
 
   const { data: roomFeatures } = useQuery(["get_room_features"], () =>
-    ApiRoomFeature.getRoomFeatures(),
+    ApiRoomFeature.getRoomFeatures()
   );
 
   const convertRoomFeatures = useMemo(() => {
@@ -98,7 +98,7 @@ export default function ModalCreateEditRoom({
       files
         .filter((item) => item.uid.startsWith("initial"))
         .map((item) => item.url)
-        .toString(),
+        .toString()
     );
 
     if (roomSelected) {

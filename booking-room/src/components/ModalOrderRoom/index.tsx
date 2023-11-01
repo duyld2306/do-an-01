@@ -15,6 +15,7 @@ import ApiRoom, { IBookRoomBody, IRoomRes } from "@/api/ApiRoom";
 import { useMutation } from "@tanstack/react-query";
 import Notification from "../Notification";
 import { BookingRoomValidation } from "@/utils/validation/booking-room";
+import { REG_EMAIL } from "@/utils/validation/booking-room/reg";
 
 interface IRoomValue {
   firstName: string;
@@ -170,7 +171,17 @@ export default function ModalOrderRoom({
                       <FormItemGlobal name="lastName" label="Họ" required>
                         <InputFormikGlobal name="lastName" placeholder="Họ" />
                       </FormItemGlobal>
-                      <FormItemGlobal name="email" label="Email" required>
+                      <FormItemGlobal
+                        name="email"
+                        label="Email"
+                        required
+                        rules={[
+                          {
+                            pattern: REG_EMAIL,
+                            message: "Email không đúng định dạng",
+                          },
+                        ]}
+                      >
                         <InputFormikGlobal name="email" placeholder="Email" />
                       </FormItemGlobal>
                       <FormItemGlobal name="sex" label="Giới tính" required>
@@ -216,7 +227,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkin",
-                              date?.startOf("day"),
+                              date?.startOf("day")
                             );
                           }}
                         />
@@ -235,7 +246,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkout",
-                              date?.startOf("day"),
+                              date?.startOf("day")
                             );
                           }}
                         />
@@ -246,7 +257,7 @@ export default function ModalOrderRoom({
                     Số tiền thanh toán:{" "}
                     {calculateNight(
                       formikProps.values.checkin,
-                      formikProps.values.checkout,
+                      formikProps.values.checkout
                     )}{" "}
                     VNĐ
                   </span>

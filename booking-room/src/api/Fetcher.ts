@@ -22,8 +22,8 @@ export interface IDataError {
 
 function handleError(dataError: IDataError) {
   try {
-    const { errorCode } = dataError;
-    Notification.notificationError(errorCode);
+    const { errorCode, errorMessage } = dataError;
+    Notification.notificationError(errorMessage || errorCode);
   } catch (e) {
     console.warn(e);
     Notification.notificationError("Something is wrong. Please try again");
@@ -32,7 +32,7 @@ function handleError(dataError: IDataError) {
 
 export function fetcher<T>(
   config: AxiosRequestConfig,
-  options?: IFetcherOptions,
+  options?: IFetcherOptions
 ) {
   const defaultOptions: IFetcherOptions = {
     displayError: true,
@@ -78,7 +78,7 @@ export function fetcher<T>(
         }
         const dataError: IDataError = {
           errorCode: response.data.errorCode,
-          errorMessage: response.data.errorCode,
+          errorMessage: response.data.message,
         };
 
         if (defaultOptions.displayError) {

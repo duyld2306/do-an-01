@@ -3,63 +3,63 @@ import { useMemo, useRef } from "react";
 import { FieldArray, Formik, FormikProps } from "formik";
 import { Space } from "antd";
 import ModalGlobal from "..";
-import ApiService from "@/api/ApiService";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Notification from "@/components/Notification";
 import FormGlobal, {
   FormItemGlobal,
-  InputNumberFormikGlobal,
-  SelectFormikGlobal,
+  InputFormikGlobal,
 } from "@/components/FormGlobal";
-import ApiBookRoom, { IBookingRes } from "@/api/ApiBookRoom";
+import ApiRoom, { IRoomRes } from "@/api/ApiRoom";
 
-interface IModalUpdateService {
+interface IRoomName {
+  id: string;
+  name: string;
+}
+interface IModalUpdateRoomName {
   isOpenModal: boolean;
   handleCloseModal: () => void;
-  selectedBooking: IBookingRes;
+  selectedRoom: IRoomRes;
 }
 
 interface IInitialValues {
-  service_quantity: { idService?: string; quantity?: number }[];
+  roomName: { id?: string; name: string }[];
 }
 
-export default function ModalUpdateService({
+export default function ModalUpdateRoomName({
   isOpenModal,
   handleCloseModal,
-  selectedBooking,
-}: IModalUpdateService) {
+  selectedRoom,
+}: IModalUpdateRoomName) {
   const innerRef = useRef<FormikProps<IInitialValues>>(null);
   const queryClient = useQueryClient();
 
+  console.log(selectedRoom);
+
   const initialValues: IInitialValues = useMemo(() => {
     return {
-      service_quantity: [],
+      roomName:
+        selectedRoom.roomNames?.map((Rname) => ({
+          name: Rname.name,
+          id: Rname.id,
+        })) ?? [],
     };
-  }, [selectedBooking]);
+  }, [selectedRoom]);
 
-  const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices()
-  );
-  const convertServicesValue = useMemo(() => {
-    return services?.results.map((item) => ({
-      label: item.name,
-      value: item.id,
-    }));
-  }, [services]);
+  console.log(initialValues);
 
   const onCancel = () => {
     handleCloseModal();
     innerRef.current?.resetForm();
   };
 
-  const updateServiceMutation = useMutation(ApiBookRoom.updateService);
+  const updateRoomNameMutation = useMutation(ApiRoom.updateRoomName);
   const handleSubmit = async (values: IInitialValues) => {
-    updateServiceMutation.mutate(
-      { id: selectedBooking.id, body: values.service_quantity },
+    updateRoomNameMutation.mutate(
+      { id: selectedRoom.id, body: values.roomName },
       {
         onSuccess: () => {
           Notification.notificationSuccess("Thành công");
-          queryClient.refetchQueries(["get_bookings"]);
+          queryClient.refetchQueries(["get_rooms"]);
           onCancel();
         },
       }
@@ -77,46 +77,39 @@ export default function ModalUpdateService({
         return (
           <ModalGlobal
             open={isOpenModal}
-            title={"Cập nhật dịch vụ sử dụng"}
+            title={"Cập nhật tên phòng con sử dụng"}
             onOk={handleSubmit}
             onCancel={onCancel}
-            isLoadingOK={updateServiceMutation.isLoading}
+            isLoadingOK={updateRoomNameMutation.isLoading}
             width={500}
           >
             <FormGlobal>
-              <FieldArray name="service_quantity">
+              <FieldArray name="roomName">
                 {({ remove, push }) => (
                   <>
                     <div className="flex items-center mb-[8px]">
-                      <span className="text-base mr-2">Dịch vụ - Số lượng</span>
+                      <span className="text-base mr-2">Thêm tên phòng con</span>
                       <button
                         className="px-2 py-[1px] text-white bg-blue-600"
                         type="button"
-                        onClick={() =>
-                          push({ idService: undefined, quantity: 1 })
-                        }
+                        onClick={() => push({ id: null, name: "501" })}
                       >
                         +
                       </button>
                     </div>
-                    {values.service_quantity?.map((_, index) => (
+                    {values.roomName?.map((_, index) => (
                       <FormItemGlobal
                         key={index}
-                        className="service-quantity-form-item"
-                        name={`service_quantity.${index}.service`}
+                        className="room-name-form-item"
+                        name={`roomName.${index}.name`}
                       >
                         <Space>
-                          <SelectFormikGlobal
-                            name={`service_quantity.${index}.idService`}
-                            allowClear={false}
-                            options={convertServicesValue}
-                          />
-                          <InputNumberFormikGlobal
-                            name={`service_quantity.${index}.quantity`}
-                            min={1}
+                          <InputFormikGlobal
+                            name={`roomName.${index}.name`}
+                            min={2}
                           />
                           <button
-                            className="px-4 py-2 text-white bg-blue-600"
+                            className="px-2 py-0.5 text-white bg-blue-600"
                             type="button"
                             onClick={() => remove(index)}
                           >

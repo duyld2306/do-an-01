@@ -81,7 +81,7 @@ function TextAreaFormikGlobal(
   props: FormikFieldProps &
     TextAreaProps &
     InputTextAreaProps &
-    React.RefAttributes<TextAreaRef>,
+    React.RefAttributes<TextAreaRef>
 ) {
   const { readOnly, height, resize = "none" } = props;
   return (
