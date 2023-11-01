@@ -11,10 +11,6 @@ import FormGlobal, {
 } from "@/components/FormGlobal";
 import ApiRoom, { IRoomRes } from "@/api/ApiRoom";
 
-interface IRoomName {
-  id: string;
-  name: string;
-}
 interface IModalUpdateRoomName {
   isOpenModal: boolean;
   handleCloseModal: () => void;
@@ -33,19 +29,15 @@ export default function ModalUpdateRoomName({
   const innerRef = useRef<FormikProps<IInitialValues>>(null);
   const queryClient = useQueryClient();
 
-  console.log(selectedRoom);
-
   const initialValues: IInitialValues = useMemo(() => {
     return {
       roomName:
-        selectedRoom.roomNames?.map((Rname) => ({
-          name: Rname.name,
-          id: Rname.id,
+        selectedRoom.roomNames?.map((item) => ({
+          name: item.name,
+          id: item.id,
         })) ?? [],
     };
   }, [selectedRoom]);
-
-  console.log(initialValues);
 
   const onCancel = () => {
     handleCloseModal();
@@ -62,7 +54,7 @@ export default function ModalUpdateRoomName({
           queryClient.refetchQueries(["get_rooms"]);
           onCancel();
         },
-      }
+      },
     );
   };
 

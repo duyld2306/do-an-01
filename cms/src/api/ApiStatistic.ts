@@ -1,4 +1,4 @@
-import { fetcher } from "./Fetcher";
+import { downloadFile, fetcher } from "./Fetcher";
 
 export interface IGetServiceStatisticParams {
   year: number;
@@ -50,10 +50,10 @@ function getRoomStatistic(
   return fetcher({ url: "/stats/stats-rooms", method: "get", params });
 }
 
-function getRoomStatisticInCurrentWeek(): Promise<
-  IRoomStatisticInCurrentWeekRes[]
-> {
-  return fetcher({ url: "/stats/stats-room", method: "get" });
+function getRoomStatisticInCurrentWeek(
+  roomId?: string,
+): Promise<IRoomStatisticInCurrentWeekRes[]> {
+  return fetcher({ url: `/stats/stats-room/${roomId}`, method: "get" });
 }
 
 function getRevenueStatistic(
@@ -62,9 +62,40 @@ function getRevenueStatistic(
   return fetcher({ url: "/stats/revenue", method: "get", params });
 }
 
+function exportExcelService(params: IGetServiceStatisticParams) {
+  return downloadFile({
+    url: "/stats/export-excel-service",
+    params,
+    fileName: `export_excel_service_${params.day ?? ""}_${params.month ?? ""}_${
+      params.year
+    }`,
+  });
+}
+
+function exportExcelRoom(params: IGetRoomStatisticParams) {
+  return downloadFile({
+    url: "/stats/export-excel-room",
+    params,
+    fileName: `export_excel_room_${params.day ?? ""}_${params.month ?? ""}_${
+      params.year
+    }`,
+  });
+}
+
+function exportExcelRevenue(params: IRevenueStatisticParams) {
+  return downloadFile({
+    url: "/stats/export-excel-revenue",
+    params,
+    fileName: `export_excel_revenue_${params.year}`,
+  });
+}
+
 export default {
   getServiceStatistic,
   getRoomStatistic,
   getRoomStatisticInCurrentWeek,
   getRevenueStatistic,
+  exportExcelService,
+  exportExcelRoom,
+  exportExcelRevenue,
 };

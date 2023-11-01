@@ -26,7 +26,7 @@ export default function PromotionManagement() {
   });
   const [selectedPromotion, setSelectedPromotion] = useState<IPromotionRes>();
 
-  const { data: rooms } = useQuery(
+  const { data: promotions } = useQuery(
     ["get_promotions", promotionParams],
     () => ApiPromotion.getPromotions(promotionParams),
     {
@@ -116,7 +116,8 @@ export default function PromotionManagement() {
         </Space>
       </Row>
       <TableGlobal
-        dataSource={rooms?.results}
+        total={promotions?.metadata.totalItems}
+        dataSource={promotions?.results}
         columns={columns}
         onChangeTable={handleChangeTable}
         scrollX={1200}

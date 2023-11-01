@@ -31,7 +31,7 @@ export interface IGetRoomFeaturesRes {
 }
 
 function getRoomFeatures(
-  params?: IGetRoomFeaturesParams
+  params?: IGetRoomFeaturesParams,
 ): Promise<IGetRoomFeaturesRes> {
   return fetcher({ url: "room/list-feature-room", method: "get", params });
 }

@@ -1,4 +1,5 @@
 import Notification from "@/components/Notification";
+import store from "@/redux/store";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 interface IFetcherOptions {
@@ -21,6 +22,8 @@ export interface IDataError {
   message: string;
 }
 
+const baseURL = "http://localhost:8080/api/v1";
+
 function handleError(dataError: IDataError) {
   try {
     const { message } = dataError;
@@ -39,12 +42,12 @@ export function fetcher<T>(
     displayError: true,
     isFormData: false,
     isXWWWForm: false,
-    withToken: false,
+    withToken: true,
     ...options,
   };
 
   const apiClient = axios.create({
-    baseURL: "http://localhost:8080/api/v1",
+    baseURL,
     timeout: 30000,
     headers: {
       "Content-Type": defaultOptions.isFormData
@@ -58,7 +61,11 @@ export function fetcher<T>(
   if (defaultOptions.token) {
     apiClient.defaults.headers.common.Authorization = `Bearer ${defaultOptions.token}`;
   } else if (defaultOptions.withToken) {
-    //
+    const state = store.getState();
+    const token = state.user?.accessToken;
+    if (token) {
+      apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+    }
   }
 
   return new Promise<T>((resolve, reject) => {
@@ -104,6 +111,61 @@ export function fetcher<T>(
           }
         }
         reject(error);
+      });
+  });
+}
+
+export async function downloadFile({
+  url,
+  params,
+  fileName,
+  type,
+}: {
+  url: string;
+  params?: any;
+  fileName?: string;
+  type?: string;
+}): Promise<unknown> {
+  const apiClient = axios.create({
+    baseURL,
+    timeout: 30000,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const state = store.getState();
+  const token = state.user?.accessToken;
+  if (token) {
+    apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+  }
+
+  return new Promise((resolve, reject) => {
+    apiClient
+      .request<unknown, AxiosResponse<Blob>>({
+        url: url,
+        method: "GET",
+        responseType: "blob",
+        params: params,
+      })
+      .then((response) => {
+        const href = window.URL.createObjectURL(new Blob([response.data]));
+
+        const link = document.createElement("a");
+        link.href = href;
+        link.setAttribute("download", `${fileName ?? url}.${type ?? "xlsx"}`);
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(href);
+        Notification.notificationSuccess("file đang được tải xuống");
+
+        resolve("OK");
+      })
+      .catch(() => {
+        Notification.notificationSuccess("Tải xuống thất bại");
+        reject();
       });
   });
 }

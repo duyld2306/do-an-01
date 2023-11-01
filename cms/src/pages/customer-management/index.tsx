@@ -77,6 +77,7 @@ export default function RoomManagement() {
         </Space>
       </Row>
       <TableGlobal
+        total={customers?.metadata.totalItems}
         dataSource={customers?.results}
         columns={columns}
         onChangeTable={handleChangeTable}

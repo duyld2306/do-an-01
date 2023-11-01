@@ -38,7 +38,7 @@ export default function ModalUpdateService({
   }, [selectedBooking]);
 
   const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices()
+    ApiService.getServices(),
   );
   const convertServicesValue = useMemo(() => {
     return services?.results.map((item) => ({
@@ -62,7 +62,7 @@ export default function ModalUpdateService({
           queryClient.refetchQueries(["get_bookings"]);
           onCancel();
         },
-      }
+      },
     );
   };
 

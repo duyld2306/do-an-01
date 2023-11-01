@@ -1,6 +1,6 @@
 import { ICustomerRes } from "./ApiCustomer";
 import { IRoomRes } from "./ApiRoom";
-import { fetcher } from "./Fetcher";
+import { downloadFile, fetcher } from "./Fetcher";
 
 export interface IGetBookingsParams {
   page?: number;
@@ -85,10 +85,19 @@ function checkOut(id: string) {
   return fetcher({ url: `booking/check-out/${id}`, method: "post" });
 }
 
+function downloadBill(id: string) {
+  return downloadFile({
+    url: "/booking/export-bill",
+    params: { id },
+    fileName: `bill_of_room_id_${id}`,
+  });
+}
+
 export default {
   getBookings,
   createBooking,
   updateService,
   checkIn,
   checkOut,
+  downloadBill,
 };

@@ -1,13 +1,18 @@
 import { IRoute, PUBLIC_ROUTES } from "@/lazyLoading";
 import "./index.scss";
-import { Breadcrumb, Dropdown, Image, MenuProps } from "antd";
+import { Breadcrumb, Dropdown, Image, MenuProps, Space } from "antd";
 import { toggleMenu, useGetMenuState } from "@/redux/slices/MenuSlice";
 import { useCallback, useMemo } from "react";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logoutUser } from "@/redux/slices/UserSlice";
 import store from "@/redux/store";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 
 const findPath = (routes: IRoute[], path: string): IRoute[] | null => {
   for (const route of routes) {
@@ -43,6 +48,8 @@ function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const user = store.getState().user;
+  const isFetching = useIsFetching();
+  const isMutating = useIsMutating();
 
   const handleToggleMenu = useCallback(() => {
     dispatch(toggleMenu());
@@ -75,22 +82,27 @@ function Navbar() {
         </span>
         <RenderBreadcrumb path={location.pathname} />
       </div>
-      <Dropdown menu={{ items: dropdownItems }}>
-        <div className="cursor-pointer flex items-center gap-1">
-          <Image
-            className="rounded-full"
-            width={40}
-            height={40}
-            src={
-              user.avatar ??
-              "https://d1hjkbq40fs2x4.cloudfront.net/2016-01-31/files/1045.jpg"
-            }
-            alt="user avatar"
-            preview={false}
-          />
-          <span>{user.name}</span>
-        </div>
-      </Dropdown>
+      <Space>
+        {isFetching + isMutating > 0 && (
+          <SyncOutlined className="text-2xl" spin />
+        )}
+        <Dropdown menu={{ items: dropdownItems }}>
+          <div className="cursor-pointer flex items-center gap-1">
+            <Image
+              className="rounded-full"
+              width={40}
+              height={40}
+              src={
+                user.avatar ??
+                "https://d1hjkbq40fs2x4.cloudfront.net/2016-01-31/files/1045.jpg"
+              }
+              alt="user avatar"
+              preview={false}
+            />
+            <span>{user.name}</span>
+          </div>
+        </Dropdown>
+      </Space>
     </div>
   );
 }

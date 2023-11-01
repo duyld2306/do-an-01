@@ -31,7 +31,7 @@ export default function RoomManagement() {
     () => ApiRoom.getRooms(roomParams),
     {
       keepPreviousData: true,
-    }
+    },
   );
 
   const handleCloseModal = () => {
@@ -63,7 +63,6 @@ export default function RoomManagement() {
       title: "Tên phòng con",
       align: "center",
       render: (_, record) => {
-        // const tempArray = record.roomNames?.map((item) => item.name) ?? [];
         return !record.roomNames?.length ? (
           "Trống"
         ) : (
@@ -124,7 +123,7 @@ export default function RoomManagement() {
       render: (_, record) =>
         checkPermission(groupPermission1, store.getState().user.roles) && (
           <Space>
-            <Tooltip title="Sửa tên phòng con">
+            <Tooltip title="Sửa tên phòng con" placement="topLeft">
               <span
                 className="p-2 cursor-pointer"
                 role="presentation"
@@ -136,16 +135,18 @@ export default function RoomManagement() {
                 <EditOutlined />
               </span>
             </Tooltip>
-            <span
-              className="p-2 cursor-pointer"
-              role="presentation"
-              onClick={() => {
-                setRoomSelected(record);
-                setIsOpenModal(true);
-              }}
-            >
-              <EditOutlined />
-            </span>
+            <Tooltip title="Sửa thông tin phòng" placement="topLeft">
+              <span
+                className="p-2 cursor-pointer"
+                role="presentation"
+                onClick={() => {
+                  setRoomSelected(record);
+                  setIsOpenModal(true);
+                }}
+              >
+                <EditOutlined />
+              </span>
+            </Tooltip>
           </Space>
         ),
     },
@@ -170,17 +171,18 @@ export default function RoomManagement() {
         </Space>
       </Row>
       <TableGlobal
+        total={rooms?.metadata.totalItems}
         dataSource={rooms?.results}
         columns={columns}
         onChangeTable={handleChangeTable}
-        scrollX={1200}
+        scrollX={1300}
       />
       <ModalCreateEditRoom
         isOpenModal={isOpenModal}
         handleCloseModal={handleCloseModal}
         roomSelected={roomSelected}
       />
-      {!!roomSelected ? (
+      {roomSelected ? (
         <ModalUpdateRoomName
           isOpenModal={isOpenModalRoomName}
           handleCloseModal={() => setIsOpenModalRoomName(false)}

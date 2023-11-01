@@ -23,7 +23,7 @@ export default function RoomManagement() {
   });
   const [selectedService, setSelectedService] = useState<IServiceRes>();
 
-  const { data: customers } = useQuery(
+  const { data: services } = useQuery(
     ["get_services", serviceParams],
     () => ApiService.getServices(serviceParams),
     {
@@ -110,7 +110,8 @@ export default function RoomManagement() {
         </Space>
       </Row>
       <TableGlobal
-        dataSource={customers?.results}
+        total={services?.metadata.totalItems}
+        dataSource={services?.results}
         columns={columns}
         onChangeTable={handleChangeTable}
       />

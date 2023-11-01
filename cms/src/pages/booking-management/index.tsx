@@ -13,6 +13,7 @@ import TableGlobal, {
 } from "@/components/TableGlobal";
 import {
   CheckCircleOutlined,
+  DownloadOutlined,
   EditOutlined,
   LoginOutlined,
 } from "@ant-design/icons";
@@ -31,7 +32,7 @@ export default function RoomManagement() {
     limit: TABLE_DEFAULT_VALUE.defaultPageSize,
   });
 
-  const { data: customers, refetch } = useQuery(
+  const { data: bookings, refetch } = useQuery(
     ["get_bookings", bookingParams],
     () => ApiBookRoom.getBookings(bookingParams),
     {
@@ -74,6 +75,11 @@ export default function RoomManagement() {
         refetch();
       },
     });
+  };
+
+  const downloadBillMutation = useMutation(ApiBookRoom.downloadBill);
+  const handleDownloadBill = (roomId: string) => {
+    downloadBillMutation.mutate(roomId);
   };
 
   const handleChangeTable = (value: IChangeTable) => {
@@ -150,7 +156,7 @@ export default function RoomManagement() {
     {
       title: "Hành động",
       align: "center",
-      width: 120,
+      width: 180,
       fixed: "right",
       render: (_, record) => (
         <Space>
@@ -192,6 +198,17 @@ export default function RoomManagement() {
               <LoginOutlined />
             </span>
           </Tooltip>
+          <Tooltip title="Tải xuống bill" placement="topLeft">
+            <span
+              className="p-2 cursor-pointer"
+              role="presentation"
+              onClick={() => {
+                handleDownloadBill(record.id);
+              }}
+            >
+              <DownloadOutlined />
+            </span>
+          </Tooltip>
         </Space>
       ),
     },
@@ -216,7 +233,8 @@ export default function RoomManagement() {
         </Space>
       </Row>
       <TableGlobal
-        dataSource={customers?.results}
+        total={bookings?.metadata.totalItems}
+        dataSource={bookings?.results}
         columns={columns}
         onChangeTable={handleChangeTable}
         scrollX={1300}
