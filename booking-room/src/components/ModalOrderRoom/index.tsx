@@ -227,7 +227,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkin",
-                              date?.startOf("day")
+                              date?.startOf("day"),
                             );
                           }}
                         />
@@ -246,7 +246,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkout",
-                              date?.startOf("day")
+                              date?.startOf("day"),
                             );
                           }}
                         />
@@ -257,7 +257,7 @@ export default function ModalOrderRoom({
                     Số tiền thanh toán:{" "}
                     {calculateNight(
                       formikProps.values.checkin,
-                      formikProps.values.checkout
+                      formikProps.values.checkout,
                     )}{" "}
                     VNĐ
                   </span>
