@@ -22,6 +22,8 @@ import { Popover, Row, Space, Tooltip } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import moment from "moment";
 import { useState } from "react";
+import { checkPermission, groupPermission1 } from "@/lazyLoading";
+import store from "@/redux/store";
 
 export default function RoomManagement() {
   const [selectedBooking, setSelectedBooking] = useState<IBookingRes>();
@@ -158,59 +160,60 @@ export default function RoomManagement() {
       align: "center",
       width: 180,
       fixed: "right",
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="Thêm dịch vụ">
-            <span
-              className="p-2 cursor-pointer"
-              role="presentation"
-              onClick={() => {
-                setSelectedBooking(record);
-                setIsOpenModal("updateService");
-              }}
-            >
-              <EditOutlined />
-            </span>
-          </Tooltip>
-          <Tooltip title="Check-in" placement="topLeft">
-            <span
-              className="p-2 cursor-pointer"
-              style={{ color: record.checkedIn ? "#49CC90" : undefined }}
-              role="presentation"
-              onClick={() => {
-                handleCheckIn(record.id);
-              }}
-            >
-              <CheckCircleOutlined />
-            </span>
-          </Tooltip>
-          <Tooltip title="Check-out" placement="topLeft">
-            <span
-              className="p-2 cursor-pointer"
-              style={{
-                color: record.bookingState === "Done" ? "#49CC90" : undefined,
-              }}
-              role="presentation"
-              onClick={() => {
-                handleCheckOut(record.id);
-              }}
-            >
-              <LoginOutlined />
-            </span>
-          </Tooltip>
-          <Tooltip title="Tải xuống bill" placement="topLeft">
-            <span
-              className="p-2 cursor-pointer"
-              role="presentation"
-              onClick={() => {
-                handleDownloadBill(record.id);
-              }}
-            >
-              <DownloadOutlined />
-            </span>
-          </Tooltip>
-        </Space>
-      ),
+      render: (_, record) =>
+        checkPermission(groupPermission1, store.getState().user.roles) && (
+          <Space>
+            <Tooltip title="Thêm dịch vụ">
+              <span
+                className="p-2 cursor-pointer"
+                role="presentation"
+                onClick={() => {
+                  setSelectedBooking(record);
+                  setIsOpenModal("updateService");
+                }}
+              >
+                <EditOutlined />
+              </span>
+            </Tooltip>
+            <Tooltip title="Check-in" placement="topLeft">
+              <span
+                className="p-2 cursor-pointer"
+                style={{ color: record.checkedIn ? "#49CC90" : undefined }}
+                role="presentation"
+                onClick={() => {
+                  handleCheckIn(record.id);
+                }}
+              >
+                <CheckCircleOutlined />
+              </span>
+            </Tooltip>
+            <Tooltip title="Check-out" placement="topLeft">
+              <span
+                className="p-2 cursor-pointer"
+                style={{
+                  color: record.bookingState === "Done" ? "#49CC90" : undefined,
+                }}
+                role="presentation"
+                onClick={() => {
+                  handleCheckOut(record.id);
+                }}
+              >
+                <LoginOutlined />
+              </span>
+            </Tooltip>
+            <Tooltip title="Tải xuống bill" placement="topLeft">
+              <span
+                className="p-2 cursor-pointer"
+                role="presentation"
+                onClick={() => {
+                  handleDownloadBill(record.id);
+                }}
+              >
+                <DownloadOutlined />
+              </span>
+            </Tooltip>
+          </Space>
+        ),
     },
   ];
 

@@ -108,12 +108,14 @@ export default function PromotionManagement() {
             }
           />
         </Space>
-        <Space>
-          <ButtonGlobal
-            title="Thêm khyến mại"
-            onClick={() => setIsOpenModal(true)}
-          />
-        </Space>
+        {checkPermission(groupPermission1, store.getState().user.roles) && (
+          <Space>
+            <ButtonGlobal
+              title="Thêm khyến mại"
+              onClick={() => setIsOpenModal(true)}
+            />
+          </Space>
+        )}
       </Row>
       <TableGlobal
         total={promotions?.metadata.totalItems}

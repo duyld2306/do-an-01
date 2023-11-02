@@ -82,7 +82,6 @@ export default function ModalCreateEditPromotion({
       startDate: moment(values.startDate).format("YYYY-MM-DD"),
       endDate: moment(values.endDate).format("YYYY-MM-DD"),
     };
-    console.log(newValues);
     const formData = new FormData();
     Object.entries(newValues).forEach(([key, value]) => {
       if (value !== undefined) {
@@ -122,7 +121,6 @@ export default function ModalCreateEditPromotion({
     >
       {({ handleSubmit, setFieldValue }): JSX.Element => {
         const onChange = (info: UploadChangeParam<UploadFile<RcFile>>) => {
-          console.log(info.fileList);
           setFiles(info.fileList);
           setFieldValue("file", info.fileList[0].originFileObj);
         };

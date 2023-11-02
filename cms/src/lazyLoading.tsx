@@ -31,7 +31,6 @@ export function checkPermission(
   groupPermission: ("ROLE_ADMIN" | "ROLE_USER" | "ROLE_RECEPTIONIST")[],
   userRole?: ("ROLE_ADMIN" | "ROLE_USER" | "ROLE_RECEPTIONIST")[],
 ) {
-  console.log(userRole);
   if (userRole?.[0]) {
     return groupPermission.includes(userRole?.[0]);
   }
@@ -75,5 +74,6 @@ export const PUBLIC_ROUTES: IRoute[] = [
     path: "/statistic",
     component: Statistic,
     name: "Thống kê",
+    roles: ["ROLE_ADMIN"],
   },
 ];

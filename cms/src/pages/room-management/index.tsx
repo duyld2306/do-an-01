@@ -163,12 +163,14 @@ export default function RoomManagement() {
             }
           />
         </Space>
-        <Space>
-          <ButtonGlobal
-            title="Thêm phòng ban"
-            onClick={() => setIsOpenModal(true)}
-          />
-        </Space>
+        {checkPermission(groupPermission1, store.getState().user.roles) && (
+          <Space>
+            <ButtonGlobal
+              title="Thêm phòng ban"
+              onClick={() => setIsOpenModal(true)}
+            />
+          </Space>
+        )}
       </Row>
       <TableGlobal
         total={rooms?.metadata.totalItems}

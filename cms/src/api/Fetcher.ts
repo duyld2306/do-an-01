@@ -103,11 +103,9 @@ export function fetcher<T>(
             errorCode: "ERROR???",
             message: "Somethings Wrong",
           };
-          const dataError: IDataError =
-            (error?.response?.data as IDataError) ?? somethingsWrong;
 
           if (defaultOptions.displayError) {
-            handleError(dataError);
+            handleError(somethingsWrong);
           }
         }
         reject(error);
