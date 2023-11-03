@@ -166,7 +166,7 @@ export default function RoomManagement() {
         {checkPermission(groupPermission1, store.getState().user.roles) && (
           <Space>
             <ButtonGlobal
-              title="Thêm phòng ban"
+              title="Thêm phòng"
               onClick={() => setIsOpenModal(true)}
             />
           </Space>
