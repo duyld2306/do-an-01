@@ -66,7 +66,7 @@ export default function Room() {
             {displayRooms.map((item, i) => (
               <Col key={i} sm={24} md={12}>
                 <div className="text-center">
-                  <div className="w-full h-[400px] overflow-hidden">
+                  <div className="w-full h-[400px] overflow-hidden bg-[#ccc]">
                     <Image
                       className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
                       src={

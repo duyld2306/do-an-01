@@ -3,10 +3,14 @@ import "./index.scss";
 import { PUBLIC_ROUTES } from "@/lazyLoading";
 import { useEffect, useState } from "react";
 import { Carousel, Image } from "antd";
+import { SyncOutlined } from "@ant-design/icons";
+import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 
 function Header() {
   const [isScroll, setIsScroll] = useState(false);
   const [active, setActive] = useState(window.location.pathname);
+  const isFetching = useIsFetching();
+  const isMutating = useIsMutating();
 
   useEffect(() => {
     setActive(window.location.pathname);
@@ -54,7 +58,7 @@ function Header() {
         />
       </Carousel>
       <ul
-        className={`nav-list flex justify-center items-center p-3 w-full ${
+        className={`nav-list flex justify-center items-center p-3 w-full relative ${
           isScroll && "scrolled"
         }`}
       >
@@ -70,6 +74,11 @@ function Header() {
                 </Link>
               </li>
             ),
+        )}
+        {isFetching + isMutating > 0 && (
+          <span className="absolute top-1/2 transform -translate-y-1/2 right-[5px] flex item-center text-2xl text-white">
+            <SyncOutlined spin />
+          </span>
         )}
       </ul>
     </header>
