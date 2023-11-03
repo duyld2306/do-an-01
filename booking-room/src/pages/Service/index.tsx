@@ -4,7 +4,7 @@ import { Col, Image, Popover, Row } from "antd";
 
 export default function Service() {
   const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices()
+    ApiService.getServices(),
   );
 
   return (

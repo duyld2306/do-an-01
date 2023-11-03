@@ -1,17 +1,32 @@
+import ApiService from "@/api/ApiService";
 import "./index.scss";
 import ButtonGlobal from "@/components/ButtonGlobal";
-import { Carousel, Col, Image, Row } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { Carousel, Col, Image, Popover, Row } from "antd";
 import { useNavigate } from "react-router-dom";
+import ApiRoom from "@/api/ApiRoom";
+import ApiPromotion from "@/api/ApiPromotion";
+import moment from "moment";
 
 export default function Hotel() {
   const navigate = useNavigate();
+
+  const { data: services } = useQuery(["get_services"], () =>
+    ApiService.getServices(),
+  );
+
+  const { data: rooms } = useQuery(["get_rooms"], () => ApiRoom.getRooms());
+
+  const { data: promotions } = useQuery(["get_promotions"], () =>
+    ApiPromotion.getPromotions(),
+  );
 
   const openAboutPage = () => {
     navigate("/about");
   };
 
-  const openDetail = () => {
-    navigate("/room/1");
+  const openDetail = (slug: string) => {
+    navigate(`/room/${slug}`);
   };
 
   return (
@@ -66,55 +81,44 @@ export default function Hotel() {
         </div>
         <div className="flex justify-center">
           <Row gutter={[16, 24]} className="w-[1200px]">
-            <Col sm={24} md={12} lg={8}>
-              <div className="text-center">
-                <div className="w-full h-[400px] overflow-hidden">
-                  <Image
-                    className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                    preview={false}
-                    onClick={openDetail}
-                  />
+            {promotions?.results.map((item, i) => (
+              <Col key={i} sm={24} md={12} lg={8}>
+                <div className="text-center">
+                  <div className="w-full h-[400px] overflow-hidden">
+                    <Image
+                      className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
+                      src={
+                        item.image ??
+                        "https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                      }
+                      preview={false}
+                    />
+                  </div>
+                  <Popover
+                    title={
+                      <ul>
+                        <li>
+                          Ngày bắt đầu:{" "}
+                          {moment(item.startDate).format("DD-MM-YYYY")}
+                        </li>
+                        <li>
+                          Ngày kết thúc đầu:{" "}
+                          {moment(item.endDate).format("DD-MM-YYYY")}
+                        </li>
+                        <li>Discount: {item.discount ?? 0}%</li>
+                      </ul>
+                    }
+                  >
+                    <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2 uppercase">
+                      {item.name ?? "Tên khuyến mại chờ cập nhật"}
+                    </h2>
+                  </Popover>
+                  <p className="my-3">
+                    {item.description ?? "Mô tả khuyến mại chờ cập nhật"}
+                  </p>
                 </div>
-                <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2">
-                  PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
-                </h2>
-                <p className="my-3">
-                  Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng
-                  nhưng không kém phần trang nhã với 1 giường lớn, ghế sofa
-                  phòng khách, tivi, bàn làm việc kết hợp trang điểm, tủ quần
-                  áo, phòng tắm hiện...
-                </p>
-                <div className="flex justify-center gap-3">
-                  <ButtonGlobal>Đặt phòng</ButtonGlobal>
-                  <ButtonGlobal onClick={openDetail}>Chi tiết</ButtonGlobal>
-                </div>
-              </div>
-            </Col>
-            <Col sm={24} md={12} lg={8}>
-              <div className="text-center">
-                <div className="w-full h-[400px] overflow-hidden">
-                  <Image
-                    className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                    preview={false}
-                  />
-                </div>
-                <h2 className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2">
-                  PHÒNG SUPERIOR - HƯỚNG THỊ XÃ
-                </h2>
-                <p className="my-3">
-                  Sở hữu diện tích 38m2, phòng Superior hướng thị xã ấm cúng
-                  nhưng không kém phần trang nhã với 1 giường lớn, ghế sofa
-                  phòng khách, tivi, bàn làm việc kết hợp trang điểm, tủ quần
-                  áo, phòng tắm hiện...
-                </p>
-                <div className="flex justify-center gap-3">
-                  <ButtonGlobal>Đặt phòng</ButtonGlobal>
-                  <ButtonGlobal>Chi tiết</ButtonGlobal>
-                </div>
-              </div>
-            </Col>
+              </Col>
+            ))}
           </Row>
         </div>
       </div>
@@ -128,74 +132,27 @@ export default function Hotel() {
         </div>
         <div className="carousel mb-5">
           <Carousel className="h-[500px] bg-[#333]" effect="fade">
-            <div className="relative">
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
-                preview={false}
-              />
-              <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center text-center text-[#fff] max-w-[400px] p-3 bg-[#0000004d]">
-                <h2 className="uppercase text-[#fff] font-bold">
-                  Phòng Family Suite
-                </h2>
-                <p>
-                  Hạng phòng Family Suite tại PISTACHIO HOTEL SAPA là không gian
-                  lý tưởng dành cho gia đình có con nhỏ hoặc nhóm bạn thân
-                  thiết. Phòng có diện tích 55m2, bao gồm 2 phòng ngủ riêng biệt
-                </p>
+            {rooms?.results?.slice(0, 4).map((item, i) => (
+              <div key={i} className="relative">
+                <Image
+                  className="w-[1000px] h-[500px] object-cover"
+                  src={
+                    item.images?.[0] ??
+                    "https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
+                  }
+                  preview={false}
+                />
+                <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center text-center text-[#fff] max-w-[400px] p-3 bg-[#0000004d]">
+                  <h2
+                    className="uppercase text-[#fff] font-bold cursor-pointer hover:text-[#fcb134]"
+                    onClick={() => openDetail(item.slug)}
+                  >
+                    {item.name ?? "Tên phòng đang chờ cập nhật"}
+                  </h2>
+                  <p>{item.description ?? "Mô tả phòng đang chờ cập nhật"}</p>
+                </div>
               </div>
-            </div>
-            <div className="relative">
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home3.jpg"
-                preview={false}
-              />
-              <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center text-center text-[#fff] max-w-[400px] p-3 bg-[#0000004d]">
-                <h2 className="uppercase text-[#fff] font-bold">
-                  Phòng Family Suite
-                </h2>
-                <p>
-                  Hạng phòng Family Suite tại PISTACHIO HOTEL SAPA là không gian
-                  lý tưởng dành cho gia đình có con nhỏ hoặc nhóm bạn thân
-                  thiết. Phòng có diện tích 55m2, bao gồm 2 phòng ngủ riêng biệt
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home4.jpg"
-                preview={false}
-              />
-              <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center text-center text-[#fff] max-w-[400px] p-3 bg-[#0000004d]">
-                <h2 className="uppercase text-[#fff] font-bold">
-                  Phòng Family Suite
-                </h2>
-                <p>
-                  Hạng phòng Family Suite tại PISTACHIO HOTEL SAPA là không gian
-                  lý tưởng dành cho gia đình có con nhỏ hoặc nhóm bạn thân
-                  thiết. Phòng có diện tích 55m2, bao gồm 2 phòng ngủ riêng biệt
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <Image
-                className="w-[1000px] h-[500px] object-cover"
-                src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                preview={false}
-              />
-              <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center text-center text-[#fff] max-w-[400px] p-3 bg-[#0000004d]">
-                <h2 className="uppercase text-[#fff] font-bold">
-                  Phòng Family Suite
-                </h2>
-                <p>
-                  Hạng phòng Family Suite tại PISTACHIO HOTEL SAPA là không gian
-                  lý tưởng dành cho gia đình có con nhỏ hoặc nhóm bạn thân
-                  thiết. Phòng có diện tích 55m2, bao gồm 2 phòng ngủ riêng biệt
-                </p>
-              </div>
-            </div>
+            ))}
           </Carousel>
         </div>
       </div>
@@ -209,44 +166,36 @@ export default function Hotel() {
         </div>
         <div className="flex justify-center">
           <Row gutter={[16, 24]} className="w-[1200px]">
-            <Col md={24} lg={12} className="flex">
-              <div className="w-[290px] h-[200px] overflow-hidden flex-">
-                <Image
-                  className="w-[290px] h-[200px] object-cover hover:scale-125 transition-all duration-300 ease-out"
-                  src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                  preview={false}
-                />
-              </div>
-              <div className="flex flex-col justify-center flex-1 p-5 text-center ">
-                <h3 className="cursor-pointer font-bold hover:text-[#bb834b]">
-                  FANSI BAR
-                </h3>
-                <p className="my-3">
-                  Tọa lạc tại tầng cao nhất của khách sạn, Fansi Bar hứa hẹn là
-                  điểm đến mới...
-                </p>
-                <h6 className="text-[#bb834b] cursor-pointer">XEM CHI TIẾT</h6>
-              </div>
-            </Col>
-            <Col md={24} lg={12} className="flex">
-              <div className="w-[290px] h-[200px] overflow-hidden flex-">
-                <Image
-                  className="w-[290px] h-[200px] object-cover hover:scale-125 transition-all duration-300 ease-out"
-                  src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
-                  preview={false}
-                />
-              </div>
-              <div className="flex flex-col justify-center flex-1 p-5 text-center ">
-                <h3 className="cursor-pointer font-bold hover:text-[#bb834b]">
-                  FANSI BAR
-                </h3>
-                <p className="my-3">
-                  Tọa lạc tại tầng cao nhất của khách sạn, Fansi Bar hứa hẹn là
-                  điểm đến mới...
-                </p>
-                <h6 className="text-[#bb834b] cursor-pointer">XEM CHI TIẾT</h6>
-              </div>
-            </Col>
+            {services?.results.map((item, i) => (
+              <Col key={i} md={24} lg={12} className="flex">
+                <div className="w-[290px] h-[200px] overflow-hidden flex-">
+                  <Image
+                    className="w-[290px] h-[200px] object-cover hover:scale-125 transition-all duration-300 ease-out"
+                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                    preview={false}
+                  />
+                </div>
+                <div className="flex flex-col justify-center flex-1 p-5 text-center ">
+                  <Popover
+                    title={
+                      <ul>
+                        <li>Đơn vị: {item.unity ?? "-"}</li>
+                        <li>
+                          Đơn giá: {(item.price ?? 0).toLocaleString()} vnđ
+                        </li>
+                      </ul>
+                    }
+                  >
+                    <h3 className="cursor-pointer font-bold hover:text-[#bb834b]">
+                      {item.name ?? "Tên dịch vụ chờ cập nhật"}
+                    </h3>
+                  </Popover>
+                  <p className="my-3">
+                    {item.description ?? "Mô tả dịch vụ chờ cập nhật"}
+                  </p>
+                </div>
+              </Col>
+            ))}
           </Row>
         </div>
       </div>

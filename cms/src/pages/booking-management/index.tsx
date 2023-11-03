@@ -99,6 +99,11 @@ export default function RoomManagement() {
       render: (_, __, i) => i + 1,
     },
     {
+      title: "Tên phòng",
+      dataIndex: ["room", "name"],
+      align: "center",
+    },
+    {
       title: "Tên khách hàng",
       dataIndex: ["client", "name"],
       align: "center",

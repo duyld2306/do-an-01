@@ -88,8 +88,8 @@ export function fetcher<T>(
           return;
         }
         const dataError: IDataError = {
-          errorCode: response.data.errorCode,
-          message: response.data.message,
+          errorCode: response.data.errorCode ?? "ERROR???",
+          message: response.data.message ?? "Somethings Wrong",
         };
 
         if (defaultOptions.displayError) {

@@ -90,6 +90,7 @@ function downloadBill(id: string) {
     url: "/booking/export-bill",
     params: { id },
     fileName: `bill_of_room_id_${id}`,
+    type: "pdf",
   });
 }
 

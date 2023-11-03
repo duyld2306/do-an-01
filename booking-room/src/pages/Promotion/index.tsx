@@ -5,7 +5,7 @@ import moment from "moment";
 
 export default function Promotion() {
   const { data: promotions } = useQuery(["get_promotions"], () =>
-    ApiPromotion.getPromotions()
+    ApiPromotion.getPromotions(),
   );
 
   return (
