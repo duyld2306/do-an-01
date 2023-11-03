@@ -40,23 +40,21 @@ export default function RoomManagement() {
     () => ApiBookRoom.getBookings(bookingParams),
     {
       keepPreviousData: true,
-    },
+    }
   );
 
   const renderBookingState = (
-    state: "Init" | "AdminInit" | "Success" | "Done" | "Reject",
+    state: "Init" | "AdminInit" | "Success" | "Done" | "Reject"
   ) => {
     switch (state) {
       case "AdminInit":
-        return "Khởi tạo bằng admin";
-      case "Success":
-        return "Thanh toán phòng thành công";
+        return "Đặt phòng trực tiếp";
       case "Done":
-        return "Đã thanh toán hết";
+        return "Check out";
       case "Reject":
         return "Hủy đặt phòng";
       default:
-        return "Khởi tạo";
+        return "Đặt phòng qua web";
     }
   };
 
