@@ -8,12 +8,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { PUBLIC_ROUTES } from "@/lazyLoading";
 import { useEffect } from "react";
 import ApiUser from "@/api/ApiUser";
+import Helmet from "@/components/Helmet";
 
 function LayoutWrapper() {
   const navigate = useNavigate();
   const location = useLocation();
   const isDashboardLayout = PUBLIC_ROUTES.find(
-    (item) => item.path === location.pathname,
+    (item) => item.path === location.pathname
   );
 
   useEffect(() => {

@@ -9,6 +9,7 @@ import "antd/dist/antd.css";
 import LayoutWrapper from "./layouts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Helmet from "./components/Helmet";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,7 @@ function App() {
       <BrowserRouter>
         <Provider store={store}>
           <QueryClientProvider client={queryClient}>
+            <Helmet title="Quản trị khách sạn" />
             <LayoutWrapper />
             <ToastContainer />
             <ReactQueryDevtools initialIsOpen={false} />
