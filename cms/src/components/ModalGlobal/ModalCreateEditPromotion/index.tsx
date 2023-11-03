@@ -51,6 +51,8 @@ export default function ModalCreateEditPromotion({
         url: selectedPromotion?.image,
       };
       setFiles([tempArray]);
+    } else {
+      setFiles([]);
     }
   }, [selectedPromotion]);
 

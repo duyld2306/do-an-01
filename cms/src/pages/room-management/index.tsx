@@ -55,12 +55,6 @@ export default function RoomManagement() {
     },
     {
       title: "Tên phòng",
-      dataIndex: "name",
-      align: "center",
-      width: 250,
-    },
-    {
-      title: "Tên phòng con",
       align: "center",
       render: (_, record) => {
         return !record.roomNames?.length ? (
@@ -75,7 +69,7 @@ export default function RoomManagement() {
                       <ul>
                         <li>
                           Trạng thái:{" "}
-                          {item.isBooking ? "Đã được dùng" : "Chưa được dùng"}
+                          {item.booking ? "Đã được dùng" : "Chưa được dùng"}
                         </li>
                         <li>
                           Ngày thêm:{" "}
@@ -84,7 +78,7 @@ export default function RoomManagement() {
                       </ul>
                     }
                   >
-                    {item.name}
+                    {item.name} - {item.booking ? "Được đặt" : "Trống"}
                   </Popover>
                 </li>
               );
@@ -92,6 +86,12 @@ export default function RoomManagement() {
           </ul>
         );
       },
+    },
+    {
+      title: "Loại phòng",
+      dataIndex: "name",
+      align: "center",
+      width: 250,
     },
     {
       title: "Mô tả",

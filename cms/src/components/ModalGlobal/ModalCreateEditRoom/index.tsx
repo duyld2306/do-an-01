@@ -53,6 +53,8 @@ export default function ModalCreateEditRoom({
         });
       });
       setFiles(tempArray);
+    } else {
+      setFiles([]);
     }
   }, [roomSelected]);
 

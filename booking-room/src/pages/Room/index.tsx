@@ -35,7 +35,7 @@ export default function Room() {
         return total > (page + 1) * limit ? page + 1 : undefined;
       },
       cacheTime: 0,
-    }
+    },
   );
 
   const displayRooms = useMemo(() => {

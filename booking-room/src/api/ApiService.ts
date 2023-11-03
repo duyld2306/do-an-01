@@ -14,6 +14,7 @@ export interface IServiceRes {
   unity: string;
   price: number;
   description: string;
+  image: string;
 }
 
 export interface IGetServicesRes {

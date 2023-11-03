@@ -13,6 +13,7 @@ import TableGlobal, {
 } from "@/components/TableGlobal";
 import {
   CheckCircleOutlined,
+  CloseCircleOutlined,
   DownloadOutlined,
   EditOutlined,
   LoginOutlined,
@@ -82,6 +83,11 @@ export default function RoomManagement() {
   const downloadBillMutation = useMutation(ApiBookRoom.downloadBill);
   const handleDownloadBill = (roomId: string) => {
     downloadBillMutation.mutate(roomId);
+  };
+
+  const cancelRoomMutation = useMutation(ApiBookRoom.cancelRoom);
+  const handleCancelRoom = (roomId: string) => {
+    cancelRoomMutation.mutate(roomId);
   };
 
   const handleChangeTable = (value: IChangeTable) => {
@@ -163,7 +169,7 @@ export default function RoomManagement() {
     {
       title: "Hành động",
       align: "center",
-      width: 180,
+      width: 210,
       fixed: "right",
       render: (_, record) =>
         checkPermission(groupPermission1, store.getState().user.roles) && (
@@ -204,6 +210,20 @@ export default function RoomManagement() {
                 }}
               >
                 <LoginOutlined />
+              </span>
+            </Tooltip>
+            <Tooltip title="Hủy đặt phòng" placement="topLeft">
+              <span
+                className="p-2 cursor-pointer"
+                style={{
+                  color: record.bookingState === "Reject" ? "red" : undefined,
+                }}
+                role="presentation"
+                onClick={() => {
+                  handleCancelRoom(record.id);
+                }}
+              >
+                <CloseCircleOutlined />
               </span>
             </Tooltip>
             <Tooltip title="Tải xuống bill" placement="topLeft">

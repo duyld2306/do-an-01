@@ -15,7 +15,9 @@ export default function Hotel() {
     ApiService.getServices()
   );
 
-  const { data: rooms } = useQuery(["get_rooms"], () => ApiRoom.getRooms());
+  const { data: rooms } = useQuery(["get_rooms"], () =>
+    ApiRoom.getRooms({ page: 0, limit: 5 })
+  );
 
   const { data: promotions } = useQuery(["get_promotions"], () =>
     ApiPromotion.getPromotions()
@@ -33,7 +35,7 @@ export default function Hotel() {
     <div className="home-page">
       <div className="px-20 py-10 bg-[#f5f5f5]">
         <div className="text-center mb-3">
-          <h3 className="text-[19px] spac">Khách sạn 4 Sao Pistachio</h3>
+          <h3 className="text-[19px] spac">Khách sạn Thanh sơn</h3>
           <h1 className="text-[#333] text-[1.8em] font-normal">
             ỐC ĐẢO YÊN BÌNH GIỮA LÒNG SAPA
           </h1>
@@ -43,7 +45,7 @@ export default function Hotel() {
             <iframe
               width="100%"
               height="450"
-              src="https://www.youtube.com/embed/Cjp6RVrOOW0"
+              src="https://www.youtube.com/embed/-AREhw2Ot3o?si=ftvtsCik7hkpWbyx"
               frameBorder="0"
               allowFullScreen
             />
@@ -51,20 +53,13 @@ export default function Hotel() {
           <div className="flex-[1]">
             <p className="font-light">
               <span className="inline-block mb-5">
-                Không chỉ là một địa điểm lưu trú lý tưởng cho du khách khi đến
-                với “thị trấn mờ sương”, PISTACHIO HOTEL SAPA còn được chăm chút
-                như một “bảo tàng thu nhỏ” – nơi lưu giữ những giá trị văn hóa
-                độc đáo của các dân tộc vùng cao trong sự hòa quyện tinh tế cùng
-                phong cách nghỉ dưỡng thời thượng.
-              </span>
-              <span>
-                Pistachio Hotel Sapa như một ốc đảo tại “trái tim” của Sapa,
-                trên con đường Thác Bạc giữa trung tâm thị trấn. Khách sạn mang
-                đến tầm nhìn thoáng đãng ôm trọn khung cảnh thung lũng Mường Hoa
-                thơ mộng và dãy Hoàng Liên Sơn hùng vĩ từ bình minh rực rỡ đến
-                hoàng hôn tráng lệ. Chỉ cần mở cửa ban công, du khách có thể đón
-                mây ùa vào căn phòng, một bước chạm vào “miền tiên cảnh” hay
-                trải nghiệm những tuyệt vời riêng có của vùng đất này.
+                Ẩn sâu trong những dãy núi hùng vĩ ở phía bắc của Việt Nam, Sapa
+                là một điểm đến khiến lòng của những người thợ du lịch bị mê
+                hoặc bởi vẻ đẹp của cảnh quan tuyệt đẹp, văn hóa dân tộc đa dạng
+                và khí hậu mát mẻ, thư thái. Trong số nhiều lựa chọn chỗ ở tại
+                thị trấn xinh đẹp này, có một địa điểm nổi bật, là nơi lý tưởng
+                cho những du khách khó tính tìm kiếm sự thoải mái, sự quyến rũ
+                và tầm nhìn không giới hạn.
               </span>
             </p>
             <ButtonGlobal className="mt-4" onClick={openAboutPage}>
@@ -125,14 +120,14 @@ export default function Hotel() {
 
       <div className="px-20 py-10 bg-[#f5f5f5]">
         <div className="text-center mb-3">
-          <h3 className="text-[19px] spac">Khách sạn 4 Sao Pistachio</h3>
+          <h3 className="text-[19px]">Khách sạn Thanh sơn</h3>
           <h1 className="text-[#333] text-[1.8em] font-normal">
             DANH SÁCH PHÒNG
           </h1>
         </div>
         <div className="carousel mb-5">
-          <Carousel className="h-[500px] bg-[#333]" effect="fade">
-            {rooms?.results?.slice(0, 4).map((item, i) => (
+          <Carousel className="w-[1000px] h-[500px] bg-[#333]" effect="fade">
+            {rooms?.results?.map((item, i) => (
               <div key={i} className="relative">
                 <Image
                   className="w-[1000px] h-[500px] object-cover"
@@ -210,7 +205,7 @@ export default function Hotel() {
         <div>
           <div className="flex justify-center">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0982636430845!2d105.838921!3d20.9995641!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ac71752d8f79%3A0xd2ec575c01017afa!2sTr%C6%B0%E1%BB%9Dng%20%C4%90%E1%BA%A1i%20H%E1%BB%8Dc%20Kinh%20T%E1%BA%BF%20Qu%E1%BB%91c%20D%C3%A2n%20(NEU)!5e0!3m2!1svi!2sau!4v1630291924478"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.4580290489357!2d103.84083457619391!3d22.336327879660754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x36cd416ca288a78d%3A0x2f373ec5673d75ef!2zNDcgWHXDom4gVmnDqm4sIFRULiBTYSBQYSwgU2EgUGEsIEzDoG8gQ2FpLCBWaeG7h3QgTmFt!5e0!3m2!1svi!2s!4v1699022185410!5m2!1svi!2s"
               width="100%"
               height="450"
               style={{ border: 0 }}

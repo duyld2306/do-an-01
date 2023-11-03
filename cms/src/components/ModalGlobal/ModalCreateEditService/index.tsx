@@ -1,8 +1,8 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Formik, FormikProps } from "formik";
 import { Col, Row } from "antd";
 import ModalGlobal from "..";
-import ApiService, { ICreateServiceBody, IServiceRes } from "@/api/ApiService";
+import ApiService, { IServiceRes } from "@/api/ApiService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Notification from "@/components/Notification";
 import FormGlobal, {
@@ -11,6 +11,7 @@ import FormGlobal, {
   InputNumberFormikGlobal,
 } from "@/components/FormGlobal";
 import { ServiceValidation } from "@/utils/validation/service";
+import Upload, { RcFile, UploadChangeParam, UploadFile } from "antd/lib/upload";
 
 interface IModalCreateEditService {
   isOpenModal: boolean;
@@ -18,13 +19,39 @@ interface IModalCreateEditService {
   selectedService?: IServiceRes;
 }
 
+interface ICreateServiceBody {
+  name: string;
+  description: string;
+  price: number;
+  unity: string;
+  file?: RcFile[];
+}
+
 export default function ModalCreateEditService({
   isOpenModal,
   handleCloseModal,
   selectedService,
 }: IModalCreateEditService) {
+  const [files, setFiles] = useState<UploadFile<RcFile>[]>([]);
+
   const innerRef = useRef<FormikProps<ICreateServiceBody>>(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (selectedService?.image) {
+      const urlSplit = selectedService?.image.split("/");
+      const fileName = urlSplit[urlSplit.length - 1];
+      const tempArray: UploadFile<RcFile> = {
+        uid: "initial",
+        name: fileName ?? "file name",
+        status: "done",
+        url: selectedService?.image,
+      };
+      setFiles([tempArray]);
+    } else {
+      setFiles([]);
+    }
+  }, [selectedService]);
 
   const initialValues: ICreateServiceBody = useMemo(() => {
     return {
@@ -32,6 +59,7 @@ export default function ModalCreateEditService({
       unity: selectedService?.unity ?? "",
       description: selectedService?.description ?? "",
       price: selectedService?.price ?? 0,
+      file: undefined,
     };
   }, [selectedService]);
 
@@ -43,20 +71,25 @@ export default function ModalCreateEditService({
   const createServiceMutation = useMutation(ApiService.createService);
   const updateServiceMutation = useMutation(ApiService.updateService);
   const handleSubmit = async (values: ICreateServiceBody) => {
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      if (value !== undefined) {
+        formData.append(key, value as string);
+      }
+    });
+
     if (selectedService) {
-      updateServiceMutation.mutate(
-        { id: selectedService.id, body: values },
-        {
-          onSuccess: () => {
-            Notification.notificationSuccess("Thành công");
-            queryClient.refetchQueries(["get_services"]);
-            onCancel();
-          },
+      formData.append("id", selectedService.id);
+      updateServiceMutation.mutate(formData, {
+        onSuccess: () => {
+          Notification.notificationSuccess("Thành công");
+          queryClient.refetchQueries(["get_services"]);
+          onCancel();
         },
-      );
+      });
       return;
     }
-    createServiceMutation.mutate(values, {
+    createServiceMutation.mutate(formData, {
       onSuccess: () => {
         Notification.notificationSuccess("Thành công");
         queryClient.refetchQueries(["get_services"]);
@@ -71,9 +104,14 @@ export default function ModalCreateEditService({
       initialValues={initialValues}
       enableReinitialize
       onSubmit={handleSubmit}
-      validationSchema={ServiceValidation}
+      validationSchema={ServiceValidation(selectedService ? "edit" : "create")}
     >
-      {({ handleSubmit }): JSX.Element => {
+      {({ handleSubmit, setFieldValue }): JSX.Element => {
+        const onChange = (info: UploadChangeParam<UploadFile<RcFile>>) => {
+          setFiles(info.fileList);
+          setFieldValue("file", info.fileList[0].originFileObj);
+        };
+
         return (
           <ModalGlobal
             open={isOpenModal}
@@ -112,6 +150,22 @@ export default function ModalCreateEditService({
                   </FormItemGlobal>
                 </Col>
               </Row>
+              <FormItemGlobal
+                name="file"
+                label="Ảnh minh họa"
+                required={!selectedService}
+              >
+                <Upload
+                  name="file"
+                  listType="picture-card"
+                  accept=".png,.jpg,.jpeg"
+                  fileList={files}
+                  beforeUpload={() => false}
+                  onChange={onChange}
+                >
+                  {files.length < 1 && "Upload"}
+                </Upload>
+              </FormItemGlobal>
             </FormGlobal>
           </ModalGlobal>
         );

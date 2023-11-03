@@ -17,7 +17,7 @@ export interface IRoomName {
   id: string;
   name: string;
   createdAt: Date;
-  isBooking: boolean;
+  booking: boolean;
 }
 
 export interface IGetRoomFeaturesRes {

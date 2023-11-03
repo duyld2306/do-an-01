@@ -85,6 +85,10 @@ function checkOut(id: string) {
   return fetcher({ url: `booking/check-out/${id}`, method: "post" });
 }
 
+function cancelRoom(id: string) {
+  return fetcher({ url: `booking/cancel/${id}`, method: "post" });
+}
+
 function downloadBill(id: string) {
   return downloadFile({
     url: "/booking/export-bill",
@@ -100,5 +104,6 @@ export default {
   updateService,
   checkIn,
   checkOut,
+  cancelRoom,
   downloadBill,
 };

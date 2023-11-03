@@ -4,7 +4,7 @@ import { Col, Image, Popover, Row } from "antd";
 
 export default function Service() {
   const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices()
+    ApiService.getServices(),
   );
 
   return (
@@ -21,7 +21,10 @@ export default function Service() {
                   <div className="w-full h-[400px] overflow-hidden bg-[#ccc]">
                     <Image
                       className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
-                      src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                      src={
+                        item.image ??
+                        "https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                      }
                       preview={false}
                     />
                   </div>

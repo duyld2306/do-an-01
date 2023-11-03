@@ -17,7 +17,7 @@ export default function DetailRoom() {
   const { data: room } = useQuery(
     ["get_room", slug],
     () => ApiRoom.getRoom(slug),
-    { enabled: !!slug },
+    { enabled: !!slug }
   );
 
   const { data: rooms } = useQuery(["get_rooms_1"], () => ApiRoom.getRooms());
@@ -42,23 +42,19 @@ export default function DetailRoom() {
           {room?.name || "Tên phòng chờ cập nhật"}
         </h1>
         <div className="carousel mb-5">
-          <Carousel
-            className="max-w-[1000px] h-[500px] bg-[#333]"
-            effect="fade"
-          >
-            {(room?.images?.length ?? 0) > 0 &&
-              room?.images?.map((item, i) => (
-                <div key={i}>
-                  <Image
-                    className="w-[1000px] h-[500px] object-cover"
-                    src={
-                      item ??
-                      "https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
-                    }
-                    preview={false}
-                  />
-                </div>
-              ))}
+          <Carousel className="w-[1000px] h-[500px] bg-[#333]" effect="fade">
+            {room?.images?.map((item) => (
+              <div key={item}>
+                <Image
+                  className="w-[1000px] h-[500px] object-cover"
+                  src={
+                    item ??
+                    "https://www.pistachiohotel.com/UploadFile/Banner/home2.jpg"
+                  }
+                  preview={false}
+                />
+              </div>
+            ))}
           </Carousel>
         </div>
         <div className="mx-auto text-center max-w-[1000px] mb-5">
