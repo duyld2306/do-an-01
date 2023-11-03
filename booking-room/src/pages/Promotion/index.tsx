@@ -5,7 +5,7 @@ import moment from "moment";
 
 export default function Promotion() {
   const { data: promotions } = useQuery(["get_promotions"], () =>
-    ApiPromotion.getPromotions(),
+    ApiPromotion.getPromotions()
   );
 
   return (
@@ -19,7 +19,7 @@ export default function Promotion() {
             {promotions?.results.map((item, i) => (
               <Col key={i} sm={24} md={12}>
                 <div className="text-center">
-                  <div className="w-full h-[400px] overflow-hidden">
+                  <div className="w-full h-[400px] overflow-hidden bg-[#ccc]">
                     <Image
                       className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
                       src={
@@ -37,7 +37,7 @@ export default function Promotion() {
                           {moment(item.startDate).format("DD-MM-YYYY")}
                         </li>
                         <li>
-                          Ngày kết thúc đầu:{" "}
+                          Ngày kết thúc:{" "}
                           {moment(item.endDate).format("DD-MM-YYYY")}
                         </li>
                         <li>Discount: {item.discount ?? 0}%</li>

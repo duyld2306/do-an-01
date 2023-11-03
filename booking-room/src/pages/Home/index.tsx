@@ -12,13 +12,13 @@ export default function Hotel() {
   const navigate = useNavigate();
 
   const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices(),
+    ApiService.getServices()
   );
 
   const { data: rooms } = useQuery(["get_rooms"], () => ApiRoom.getRooms());
 
   const { data: promotions } = useQuery(["get_promotions"], () =>
-    ApiPromotion.getPromotions(),
+    ApiPromotion.getPromotions()
   );
 
   const openAboutPage = () => {
@@ -84,7 +84,7 @@ export default function Hotel() {
             {promotions?.results.map((item, i) => (
               <Col key={i} sm={24} md={12} lg={8}>
                 <div className="text-center">
-                  <div className="w-full h-[400px] overflow-hidden">
+                  <div className="w-full h-[400px] overflow-hidden bg-[#ccc]">
                     <Image
                       className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
                       src={
@@ -102,7 +102,7 @@ export default function Hotel() {
                           {moment(item.startDate).format("DD-MM-YYYY")}
                         </li>
                         <li>
-                          Ngày kết thúc đầu:{" "}
+                          Ngày kết thúc:{" "}
                           {moment(item.endDate).format("DD-MM-YYYY")}
                         </li>
                         <li>Discount: {item.discount ?? 0}%</li>
@@ -168,7 +168,7 @@ export default function Hotel() {
           <Row gutter={[16, 24]} className="w-[1200px]">
             {services?.results.map((item, i) => (
               <Col key={i} md={24} lg={12} className="flex">
-                <div className="w-[290px] h-[200px] overflow-hidden flex-">
+                <div className="w-[290px] h-[200px] overflow-hidden bg-[#ccc]">
                   <Image
                     className="w-[290px] h-[200px] object-cover hover:scale-125 transition-all duration-300 ease-out"
                     src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"

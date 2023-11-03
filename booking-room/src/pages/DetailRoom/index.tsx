@@ -108,7 +108,7 @@ export default function DetailRoom() {
                       className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
                       src={
                         item.images?.length ?? 0 > 0
-                          ? item.images?.[1]
+                          ? item.images?.[0]
                           : "https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
                       }
                       preview={false}
