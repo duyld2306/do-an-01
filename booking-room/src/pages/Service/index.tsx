@@ -4,7 +4,7 @@ import { Col, Image, Popover, Row } from "antd";
 
 export default function Service() {
   const { data: services } = useQuery(["get_services"], () =>
-    ApiService.getServices(),
+    ApiService.getServices()
   );
 
   return (
@@ -17,7 +17,7 @@ export default function Service() {
           <Row gutter={[16, 24]} className="w-[1200px]">
             {services?.results.map((item, i) => (
               <Col key={i} sm={24} md={12}>
-                <div className="text-center">
+                <div className="text-start">
                   <div className="w-full h-[400px] overflow-hidden bg-[#ccc]">
                     <Image
                       className="hover:scale-125 w-full h-[400px] object-cover transition-all duration-300 ease-out cursor-pointer"
@@ -38,12 +38,20 @@ export default function Service() {
                       </ul>
                     }
                   >
-                    <h2
-                      className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2 uppercase"
-                      role="presentation"
-                    >
-                      {item.name || "Tên dịch vụ chờ cập nhật"}
-                    </h2>
+                    <div className="flex justify-between">
+                      <h2
+                        className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2 uppercase"
+                        role="presentation"
+                      >
+                        {item.name || "Tên dịch vụ chờ cập nhật"}
+                      </h2>
+                      <h2
+                        className="cursor-pointer text-[16px] hover:text-[#fcb134] mt-2 uppercase"
+                        role="presentation"
+                      >
+                        {(item.price || 0).toLocaleString()} vnđ
+                      </h2>
+                    </div>
                   </Popover>
                   <p className="my-3">
                     {item.description || "Mô tả dịch chờ cập nhật"}
