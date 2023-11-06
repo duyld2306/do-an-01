@@ -31,7 +31,7 @@ export default function RoomManagement() {
     () => ApiRoom.getRooms(roomParams),
     {
       keepPreviousData: true,
-    },
+    }
   );
 
   const handleCloseModal = () => {
@@ -161,6 +161,7 @@ export default function RoomManagement() {
             onSearch={() =>
               setRoomParams({ ...roomParams, search: searchValue })
             }
+            placeholder="Nhập loại phòng"
           />
         </Space>
         {checkPermission(groupPermission1, store.getState().user.roles) && (

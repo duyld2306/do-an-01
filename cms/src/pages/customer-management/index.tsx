@@ -24,7 +24,7 @@ export default function RoomManagement() {
     () => ApiCustomer.getCustomers(customerParams),
     {
       keepPreviousData: true,
-    },
+    }
   );
 
   const handleChangeTable = (value: IChangeTable) => {
@@ -52,6 +52,11 @@ export default function RoomManagement() {
       align: "center",
     },
     {
+      title: "CCCD",
+      dataIndex: "cccd",
+      align: "center",
+    },
+    {
       title: "Số điện thoại",
       dataIndex: "tel",
       align: "center",
@@ -61,6 +66,11 @@ export default function RoomManagement() {
       dataIndex: "sex",
       align: "center",
       render: (value) => (value === "male" ? "Nam" : "Nữ"),
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+      align: "center",
     },
   ];
 
@@ -73,6 +83,7 @@ export default function RoomManagement() {
             onSearch={() =>
               setCustomerParams({ ...customerParams, search: searchValue })
             }
+            placeholder="Nhập tên, số điện thoại, email, ..."
           />
         </Space>
       </Row>

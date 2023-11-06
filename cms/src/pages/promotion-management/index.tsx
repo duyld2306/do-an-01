@@ -31,7 +31,7 @@ export default function PromotionManagement() {
     () => ApiPromotion.getPromotions(promotionParams),
     {
       keepPreviousData: true,
-    },
+    }
   );
 
   const handleCloseModal = () => {
@@ -106,6 +106,7 @@ export default function PromotionManagement() {
             onSearch={() =>
               setPromotionParams({ ...promotionParams, search: searchValue })
             }
+            placeholder="Nhập tên khuyến mại"
           />
         </Space>
         {checkPermission(groupPermission1, store.getState().user.roles) && (

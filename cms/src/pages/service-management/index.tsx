@@ -28,7 +28,7 @@ export default function RoomManagement() {
     () => ApiService.getServices(serviceParams),
     {
       keepPreviousData: true,
-    },
+    }
   );
 
   const handleCloseModal = () => {
@@ -100,6 +100,7 @@ export default function RoomManagement() {
             onSearch={() =>
               setServiceParams({ ...serviceParams, search: searchValue })
             }
+            placeholder="Nhập tên dịch vụ"
           />
         </Space>
         {checkPermission(groupPermission1, store.getState().user.roles) && (

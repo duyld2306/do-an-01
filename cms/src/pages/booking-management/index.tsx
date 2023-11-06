@@ -249,6 +249,7 @@ export default function RoomManagement() {
             onSearch={() =>
               setBookingParams({ ...bookingParams, search: searchValue })
             }
+            placeholder="Nhập tên, số điện thoại, email, ..."
           />
         </Space>
         <Space>

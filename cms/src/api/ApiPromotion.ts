@@ -29,22 +29,22 @@ export interface IGetPromotionsRes {
 }
 
 const getPromotions = (
-  params?: IGetPromotionsParams,
+  params?: IGetPromotionsParams
 ): Promise<IGetPromotionsRes> => {
   return fetcher({ method: "get", url: "/promotion/list", params });
 };
 
 const createPromotion = (data: FormData) => {
   return fetcher(
-    { method: "post", url: "/promotion", data },
-    { isFormData: true },
+    { method: "post", url: "/promotion/save", data },
+    { isFormData: true }
   );
 };
 
 const updatePromotion = (data: FormData) => {
   return fetcher(
-    { method: "path", url: "/promotion", data },
-    { isFormData: true },
+    { method: "path", url: "/promotion/update", data },
+    { isFormData: true }
   );
 };
 

@@ -17,6 +17,7 @@ export interface ICustomerRes {
   email: string;
   tel: string;
   note: string;
+  cccd: string;
 }
 
 export interface IGetCustomersRes {
@@ -30,7 +31,7 @@ export interface IGetCustomersRes {
 }
 
 const getCustomers = (
-  params?: IGetCustomersParams,
+  params?: IGetCustomersParams
 ): Promise<IGetCustomersRes> => {
   return fetcher({ method: "get", url: "/client/list", params });
 };
