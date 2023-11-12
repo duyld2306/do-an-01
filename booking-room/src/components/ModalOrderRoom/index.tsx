@@ -214,6 +214,23 @@ export default function ModalOrderRoom({
                       </FormItemGlobal>
                     </Col>
                   </Row>
+
+                  <Row gutter={[8, 0]}>
+                    <Col span={12}>
+                      <FormItemGlobal name="cccd" label="CCCD" required>
+                        <InputFormikGlobal name="cccd" placeholder="CCCD" />
+                      </FormItemGlobal>
+                    </Col>
+                    <Col span={12}>
+                      <FormItemGlobal name="address" label="Địa chỉ" required>
+                        <InputFormikGlobal
+                          name="address"
+                          placeholder="Nhập địa chỉ"
+                        />
+                      </FormItemGlobal>
+                    </Col>
+                  </Row>
+
                   <Row gutter={[8, 0]}>
                     <Col span={12}>
                       <FormItemGlobal name="checkin" label="Check-in" required>
@@ -227,7 +244,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkin",
-                              date?.startOf("day"),
+                              date?.startOf("day")
                             );
                           }}
                         />
@@ -246,7 +263,7 @@ export default function ModalOrderRoom({
                           onChange={(date) => {
                             formikProps.setFieldValue(
                               "checkout",
-                              date?.startOf("day"),
+                              date?.startOf("day")
                             );
                           }}
                         />
@@ -257,7 +274,7 @@ export default function ModalOrderRoom({
                     Số tiền thanh toán:{" "}
                     {calculateNight(
                       formikProps.values.checkin,
-                      formikProps.values.checkout,
+                      formikProps.values.checkout
                     )}{" "}
                     VNĐ
                   </span>
