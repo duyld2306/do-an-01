@@ -27,7 +27,7 @@ interface ICreateBookingBody {
   checkout: Moment;
   quantity: number;
   idRoom?: string;
-  paymentType: "Momo" | "Vnpay" | "Zalopay";
+  paymentType: "Momo" | "Vnpay" | "Zalopay" | "Cash";
 }
 
 interface IModalCreateBooking {
@@ -53,7 +53,7 @@ export default function ModalCreateBooking({
       checkout: moment().startOf("day").add(1, "day"),
       quantity: 0,
       idRoom: undefined,
-      paymentType: "Momo",
+      paymentType: "Cash",
     };
   }, [isOpenModal]);
 
@@ -136,6 +136,23 @@ export default function ModalCreateBooking({
                       ]}
                     />
                   </FormItemGlobal>
+
+                  <Row gutter={[8, 0]}>
+                    <Col span={12}>
+                      <FormItemGlobal name="cccd" label="CCCD" required>
+                        <InputFormikGlobal name="cccd" placeholder="CCCD" />
+                      </FormItemGlobal>
+                    </Col>
+                    <Col span={12}>
+                      <FormItemGlobal name="address" label="Địa chỉ" required>
+                        <InputFormikGlobal
+                          name="address"
+                          placeholder="Nhập địa chỉ"
+                        />
+                      </FormItemGlobal>
+                    </Col>
+                  </Row>
+
                   <FormItemGlobal name="checkin" label="Check-in" required>
                     <DatePickerFormikGlobal
                       name="checkin"
@@ -203,6 +220,7 @@ export default function ModalCreateBooking({
                         { label: "Momo", value: "Momo" },
                         { label: "Vnpay", value: "Vnpay" },
                         { label: "Zalopay", value: "Zalopay" },
+                        { label: "Cash", value: "Cash" },
                       ]}
                     />
                   </FormItemGlobal>

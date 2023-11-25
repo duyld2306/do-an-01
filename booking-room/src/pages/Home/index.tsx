@@ -166,7 +166,10 @@ export default function Hotel() {
                 <div className="w-[290px] h-[200px] overflow-hidden bg-[#ccc]">
                   <Image
                     className="w-[290px] h-[200px] object-cover hover:scale-125 transition-all duration-300 ease-out"
-                    src="https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                    src={
+                      item.image ??
+                      "https://www.pistachiohotel.com/UploadFile/Banner/home5.jpg"
+                    }
                     preview={false}
                   />
                 </div>

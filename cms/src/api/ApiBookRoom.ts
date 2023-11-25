@@ -53,7 +53,7 @@ interface ICreateBookingBody {
   checkout: string;
   quantity: number;
   idRoom?: string;
-  paymentType: "Momo" | "Vnpay" | "Zalopay";
+  paymentType: "Momo" | "Vnpay" | "Zalopay" | "Cash";
 }
 
 interface IUpdateServiceBody {

@@ -43,7 +43,7 @@ const createPromotion = (data: FormData) => {
 
 const updatePromotion = (data: FormData) => {
   return fetcher(
-    { method: "path", url: "/promotion/update", data },
+    { method: "put", url: "/promotion/update", data },
     { isFormData: true }
   );
 };
