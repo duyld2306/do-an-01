@@ -51,11 +51,13 @@ export default function RoomManagement() {
     {
       title: "STT",
       align: "center",
+      width: 50,
       render: (_, __, i) => i + 1,
     },
     {
       title: "Tên phòng",
       align: "center",
+      width: 200,
       render: (_, record) => {
         return !record.roomNames?.length ? (
           "Trống"
@@ -91,25 +93,26 @@ export default function RoomManagement() {
       title: "Loại phòng",
       dataIndex: "name",
       align: "center",
-      width: 250,
+      width: 220,
     },
     {
       title: "Mô tả",
       dataIndex: "description",
       align: "center",
-      width: 400,
+      width: 200,
     },
     {
       title: "Giá phòng (vnđ)",
       dataIndex: "price",
       align: "center",
-      width: 150,
+      width: 100,
       render: (value) => value?.toLocaleString(),
     },
 
     {
       title: "Tiện nghi",
       align: "center",
+      width: 500,
       render: (_, record) => {
         const tempArray = record.featureRooms?.map((item) => item.name) ?? [];
         return tempArray.join(", ");

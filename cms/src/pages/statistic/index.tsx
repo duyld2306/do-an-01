@@ -24,7 +24,7 @@ function ServiceStatistic() {
     }
     const daysInMonth = moment(
       `${serviceStatisticParams.year}-${serviceStatisticParams.month}`,
-      "YYYY-M",
+      "YYYY-M"
     ).daysInMonth();
     const daysArray = Array.from({ length: daysInMonth }, (_, index) => ({
       label: index + 1 + "",
@@ -35,11 +35,11 @@ function ServiceStatistic() {
 
   const { data: serviceStatistic } = useQuery(
     ["get_service_statistic", [serviceStatisticParams]],
-    () => ApiStatistic.getServiceStatistic(serviceStatisticParams),
+    () => ApiStatistic.getServiceStatistic(serviceStatisticParams)
   );
 
   const exportExcelServiceMutation = useMutation(
-    ApiStatistic.exportExcelService,
+    ApiStatistic.exportExcelService
   );
   const handleExportExcel = () => {
     exportExcelServiceMutation.mutate(serviceStatisticParams);
@@ -137,7 +137,7 @@ function RoomStatistic() {
     }
     const daysInMonth = moment(
       `${roomStatisticParams.year}-${roomStatisticParams.month}`,
-      "YYYY-M",
+      "YYYY-M"
     ).daysInMonth();
     const daysArray = Array.from({ length: daysInMonth }, (_, index) => ({
       label: index + 1 + "",
@@ -148,7 +148,7 @@ function RoomStatistic() {
 
   const { data: roomStatistic } = useQuery(
     ["get_room_statistic", [roomStatisticParams]],
-    () => ApiStatistic.getRoomStatistic(roomStatisticParams),
+    () => ApiStatistic.getRoomStatistic(roomStatisticParams)
   );
 
   const exportExcelRoomMutation = useMutation(ApiStatistic.exportExcelRoom);
@@ -178,7 +178,7 @@ function RoomStatistic() {
   return (
     <div className="service-statistic">
       <h1 className="text-center">
-        THỐNG KÊ DỊCH DOANH THU - LƯỢT THUÊ PHÒNG THEO THỜI GIAN
+        THỐNG KÊ DOANH THU - LƯỢT THUÊ PHÒNG THEO THỜI GIAN
       </h1>
       <div className="flex justify-end">
         <Space>
@@ -259,7 +259,7 @@ function RoomStatisticInCurrentWeek() {
     () => ApiStatistic.getRoomStatisticInCurrentWeek(roomId),
     {
       enabled: !!roomId,
-    },
+    }
   );
 
   const config = {
@@ -272,7 +272,7 @@ function RoomStatisticInCurrentWeek() {
   return (
     <div className="service-statistic">
       <h1 className="text-center">
-        THỐNG KÊ DỊCH DOANH THU - LƯỢT THUÊ PHÒNG THEO TUẦN HIỆN TẠI
+        THỐNG KÊ DOANH THU - LƯỢT THUÊ PHÒNG THEO TUẦN HIỆN TẠI
       </h1>
       <div className="flex justify-end">
         <SelectGlobal
@@ -298,11 +298,11 @@ function RevenueStatistic() {
 
   const { data: revenueStatistic } = useQuery(
     ["get_revenue_statistic", [revenueStatisticParams]],
-    () => ApiStatistic.getRevenueStatistic(revenueStatisticParams),
+    () => ApiStatistic.getRevenueStatistic(revenueStatisticParams)
   );
 
   const exportExcelRevenueMutation = useMutation(
-    ApiStatistic.exportExcelRevenue,
+    ApiStatistic.exportExcelRevenue
   );
   const handleExportExcel = () => {
     exportExcelRevenueMutation.mutate(revenueStatisticParams);
@@ -332,9 +332,7 @@ function RevenueStatistic() {
 
   return (
     <div className="service-statistic">
-      <h1 className="text-center">
-        THỐNG KÊ DỊCH DOANH THU KHÁCH SẠN THEO NĂM
-      </h1>
+      <h1 className="text-center">THỐNG KÊ DOANH THU KHÁCH SẠN THEO NĂM</h1>
       <div className="flex justify-end">
         <Space>
           <ButtonGlobal
@@ -372,8 +370,8 @@ export default function Statistic() {
       <ServiceStatistic />
       <Divider />
       <RoomStatistic />
-      <Divider />
-      <RoomStatisticInCurrentWeek />
+      {/* <Divider /> */}
+      {/* <RoomStatisticInCurrentWeek /> */}
       <Divider />
       <RevenueStatistic />
     </div>
