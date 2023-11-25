@@ -3,14 +3,14 @@ import { Helmet as HelmetWrapper } from "react-helmet";
 function Helmet(props: HelmetProps) {
   return (
     <HelmetWrapper>
-      <title>Eat Clean | {props.title}</title>
+      <title>Khách sạn thanh sơn| {props.title}</title>
       <meta name="description" content={props.description} />
     </HelmetWrapper>
   );
 }
 
 Helmet.defaultProps = {
-  title: "Eat Clean",
+  title: "Khách sạn thanh sơn",
   description: "",
 };
 
