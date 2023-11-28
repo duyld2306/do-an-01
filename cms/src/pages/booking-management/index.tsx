@@ -53,6 +53,8 @@ export default function RoomManagement() {
         return "Check out";
       case "Reject":
         return "Hủy đặt phòng";
+      case "Success":
+        return "Đặt phòng qua web (Đã thanh toán)";
       default:
         return "Đặt phòng qua web";
     }
@@ -85,7 +87,12 @@ export default function RoomManagement() {
 
   const cancelRoomMutation = useMutation(ApiBookRoom.cancelRoom);
   const handleCancelRoom = (roomId: string) => {
-    cancelRoomMutation.mutate(roomId);
+    cancelRoomMutation.mutate(roomId, {
+      onSuccess: () => {
+        Notification.notificationSuccess("Hủy phòng thành công");
+        refetch();
+      },
+    });
   };
 
   const handleChangeTable = (value: IChangeTable) => {

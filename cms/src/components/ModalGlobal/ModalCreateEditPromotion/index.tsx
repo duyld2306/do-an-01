@@ -118,10 +118,10 @@ export default function ModalCreateEditPromotion({
       enableReinitialize
       onSubmit={handleSubmit}
       validationSchema={PromotionValidation(
-        selectedPromotion ? "edit" : "create",
+        selectedPromotion ? "edit" : "create"
       )}
     >
-      {({ handleSubmit, setFieldValue }): JSX.Element => {
+      {({ handleSubmit, setFieldValue, values }): JSX.Element => {
         const onChange = (info: UploadChangeParam<UploadFile<RcFile>>) => {
           setFiles(info.fileList);
           setFieldValue("file", info.fileList[0].originFileObj);
@@ -159,6 +159,9 @@ export default function ModalCreateEditPromotion({
                       name="startDate"
                       placeholder="Ngày bắt đầu"
                       allowClear={false}
+                      disabledDate={(d) =>
+                        d <= moment().subtract(1, "days") || d >= values.endDate
+                      }
                     />
                   </FormItemGlobal>
                   <FormItemGlobal name="discount" label="Discount" required>
@@ -178,6 +181,7 @@ export default function ModalCreateEditPromotion({
                       name="endDate"
                       placeholder="Ngày kết thúc"
                       allowClear={false}
+                      disabledDate={(d) => d <= values.startDate}
                     />
                   </FormItemGlobal>
                 </Col>

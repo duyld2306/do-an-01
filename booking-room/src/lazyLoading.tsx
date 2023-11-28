@@ -7,6 +7,7 @@ const Room = React.lazy(() => import("@/pages/Room"));
 const DetailRoom = React.lazy(() => import("@/pages/DetailRoom"));
 const Service = React.lazy(() => import("@/pages/Service"));
 const Promotion = React.lazy(() => import("@/pages/Promotion"));
+const Thanks = React.lazy(() => import("@/pages/Thanks"));
 // import PageNotFound from "@/pages/404";
 // import Home from "@/pages/Home";
 // import About from "@/pages/About";
@@ -19,6 +20,11 @@ export const PUBLIC_ROUTES = [
   {
     path: "*",
     component: PageNotFound,
+    name: "",
+  },
+  {
+    path: "/thank/:slug",
+    component: Thanks,
     name: "",
   },
   {
