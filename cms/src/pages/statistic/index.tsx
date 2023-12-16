@@ -1,37 +1,38 @@
-import ApiStatistic, { IGetServiceStatisticParams } from "@/api/ApiStatistic";
+import ApiStatistic, {
+  IGetRoomStatisticParams,
+  IGetServiceStatisticParams,
+} from "@/api/ApiStatistic";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { Column } from "@ant-design/plots";
-import { Divider, Space } from "antd";
+import { Divider, Space, DatePicker } from "antd";
 import { SelectGlobal } from "@/components/AntdGlobal";
 import { Pie } from "@ant-design/plots";
 import { Line } from "@ant-design/plots";
 import ApiRoom from "@/api/ApiRoom";
 import ButtonGlobal from "@/components/ButtonGlobal";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
+const dateFormat = "YYYY/MM/DD";
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 
 function ServiceStatistic() {
   const [serviceStatisticParams, setServiceStatisticParams] =
     useState<IGetServiceStatisticParams>({
-      year: moment().year(),
-      month: moment().month() + 1,
-      day: moment().date(),
+      startDate: dayjs().subtract(30, "day").format(dateFormat).toString(),
+      endDate: dayjs().format(dateFormat),
     });
-
-  const daysOfMonth = useMemo(() => {
-    if (!serviceStatisticParams.month) {
-      return [];
-    }
-    const daysInMonth = moment(
-      `${serviceStatisticParams.year}-${serviceStatisticParams.month}`,
-      "YYYY-M"
-    ).daysInMonth();
-    const daysArray = Array.from({ length: daysInMonth }, (_, index) => ({
-      label: index + 1 + "",
-      value: index + 1,
-    }));
-    return daysArray;
-  }, [serviceStatisticParams.month, serviceStatisticParams.year]);
 
   const { data: serviceStatistic } = useQuery(
     ["get_service_statistic", [serviceStatisticParams]],
@@ -43,6 +44,13 @@ function ServiceStatistic() {
   );
   const handleExportExcel = () => {
     exportExcelServiceMutation.mutate(serviceStatisticParams);
+  };
+
+  const handleRangeChange = (dates: any, dateStrings: any) => {
+    setServiceStatisticParams({
+      startDate: dateStrings[0],
+      endDate: dateStrings[1],
+    });
   };
 
   const config = {
@@ -73,48 +81,16 @@ function ServiceStatistic() {
             title="Xuất excel"
             onClick={handleExportExcel}
           />
-          <SelectGlobal
-            placeholder="Ngày"
-            options={daysOfMonth}
-            value={serviceStatisticParams.day}
-            onChange={(value) => {
-              setServiceStatisticParams({
-                ...serviceStatisticParams,
-                day: value,
-              });
-            }}
-          />
-          <SelectGlobal
-            placeholder="Tháng"
-            options={Array.from({ length: 12 }, (_, index) => ({
-              label: index + 1 + "",
-              value: index + 1,
-            }))}
-            value={serviceStatisticParams.month}
-            onChange={(value): void => {
-              setServiceStatisticParams({
-                ...serviceStatisticParams,
-                month: value,
-                day: undefined,
-              });
-            }}
-          />
-          <SelectGlobal
-            placeholder="Năm"
-            allowClear={false}
-            options={Array.from({ length: 11 }, (_, index) => ({
-              label: moment().year() - index + "",
-              value: moment().year() - index,
-            }))}
-            value={serviceStatisticParams.year}
-            onChange={(value) => {
-              setServiceStatisticParams({
-                ...serviceStatisticParams,
-                year: value,
-                month: undefined,
-                day: undefined,
-              });
-            }}
+
+          {/* @ts-ignore */}
+          <DatePicker.RangePicker
+            format={dateFormat}
+            defaultValue={[
+              dayjs(dayjs().subtract(30, "day"), dateFormat),
+              dayjs(dayjs(), dateFormat),
+            ]}
+            disabledDate={(d) => d >= moment()}
+            onChange={handleRangeChange}
           />
         </Space>
       </div>
@@ -126,25 +102,9 @@ function ServiceStatistic() {
 function RoomStatistic() {
   const [roomStatisticParams, setRoomStatisticParams] =
     useState<IGetServiceStatisticParams>({
-      year: moment().year(),
-      month: moment().month() + 1,
-      day: moment().date(),
+      startDate: dayjs().subtract(30, "day").format(dateFormat).toString(),
+      endDate: dayjs().format(dateFormat),
     });
-
-  const daysOfMonth = useMemo(() => {
-    if (!roomStatisticParams.month) {
-      return [];
-    }
-    const daysInMonth = moment(
-      `${roomStatisticParams.year}-${roomStatisticParams.month}`,
-      "YYYY-M"
-    ).daysInMonth();
-    const daysArray = Array.from({ length: daysInMonth }, (_, index) => ({
-      label: index + 1 + "",
-      value: index + 1,
-    }));
-    return daysArray;
-  }, [roomStatisticParams.month, roomStatisticParams.year]);
 
   const { data: roomStatistic } = useQuery(
     ["get_room_statistic", [roomStatisticParams]],
@@ -154,6 +114,13 @@ function RoomStatistic() {
   const exportExcelRoomMutation = useMutation(ApiStatistic.exportExcelRoom);
   const handleExportExcel = () => {
     exportExcelRoomMutation.mutate(roomStatisticParams);
+  };
+
+  const handleRangeChange = (dates: any, dateStrings: any) => {
+    setRoomStatisticParams({
+      startDate: dateStrings[0],
+      endDate: dateStrings[1],
+    });
   };
 
   const config = {
@@ -187,48 +154,15 @@ function RoomStatistic() {
             title="Xuất excel"
             onClick={handleExportExcel}
           />
-          <SelectGlobal
-            placeholder="Ngày"
-            options={daysOfMonth}
-            value={roomStatisticParams.day}
-            onChange={(value) => {
-              setRoomStatisticParams({
-                ...roomStatisticParams,
-                day: value,
-              });
-            }}
-          />
-          <SelectGlobal
-            placeholder="Tháng"
-            options={Array.from({ length: 12 }, (_, index) => ({
-              label: index + 1 + "",
-              value: index + 1,
-            }))}
-            value={roomStatisticParams.month}
-            onChange={(value): void => {
-              setRoomStatisticParams({
-                ...roomStatisticParams,
-                month: value,
-                day: undefined,
-              });
-            }}
-          />
-          <SelectGlobal
-            placeholder="Năm"
-            allowClear={false}
-            options={Array.from({ length: 11 }, (_, index) => ({
-              label: moment().year() - index + "",
-              value: moment().year() - index,
-            }))}
-            value={roomStatisticParams.year}
-            onChange={(value) => {
-              setRoomStatisticParams({
-                ...roomStatisticParams,
-                year: value,
-                month: undefined,
-                day: undefined,
-              });
-            }}
+          {/* @ts-ignore */}
+          <DatePicker.RangePicker
+            format={dateFormat}
+            defaultValue={[
+              dayjs(dayjs().subtract(30, "day"), dateFormat),
+              dayjs(dayjs(), dateFormat),
+            ]}
+            disabledDate={(d) => d >= moment()}
+            onChange={handleRangeChange}
           />
         </Space>
       </div>
@@ -290,7 +224,7 @@ function RoomStatisticInCurrentWeek() {
 
 function RevenueStatistic() {
   const [revenueStatisticParams, setRevenueStatisticParams] =
-    useState<IGetServiceStatisticParams>({
+    useState<IGetRoomStatisticParams>({
       year: moment().year(),
       month: moment().month() + 1,
       day: moment().date(),

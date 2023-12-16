@@ -52,7 +52,7 @@ export default function RoomManagement() {
       align: "center",
     },
     {
-      title: "CCCD",
+      title: "CCCD/Passport/GPLX",
       dataIndex: "cccd",
       align: "center",
     },

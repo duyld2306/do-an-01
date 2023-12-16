@@ -118,6 +118,8 @@ export default function RoomManagement() {
       title: "Tên khách hàng",
       dataIndex: ["client", "name"],
       align: "center",
+      render: (_, record) =>
+        `${record.client?.lastName} ${record.client?.firstName}`,
     },
     {
       title: "email",
